@@ -19,7 +19,9 @@ export class Shader {
 
     load(url) {
         console.log("load:", url)
-        fetch(new Request(url)).then((res) => {
+        const req = new Request(url)
+        req.headers.set("accept", "application/x-shader")
+        fetch(req).then((res) => {
             return res.text()
         }).then((source) => {
             this.setShader(source)
