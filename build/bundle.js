@@ -303,7 +303,7 @@ var shade = (function (exports) {
   function testUniform(type, name, source) {
       const re = new RegExp(`^\\s*uniform\\s+${type}\\s+${name}`, "m");
       return re.test(source);
-    }
+  }
 
   exports.Shader = Shader;
 

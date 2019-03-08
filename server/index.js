@@ -35,8 +35,11 @@ app.get(/^\/(.+\.glsl)/, (req, res) => {
     res.sendFile(path.resolve(__dirname, "..", "html", "shader.html"))
 })
 
-// Catch-all for everything else shows directory listings:
-app.get(/^\/.*/, serveIndex(".", {view: "details"}))
+// Everything that starts and ends with / shows directory listings:
+app.get(/^\/.*\/$/, serveIndex(".", {view: "details"}))
+
+// Catch all for everything else:
+app.use(express.static(path.resolve(".")))
 
 app.listen(PORT, () => {
     console.log(`shader server listening on port ${PORT}!`)
