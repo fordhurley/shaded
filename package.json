@@ -1,0 +1,11 @@
+{
+  "name": "shade",
+  "version": "1.0.0",
+  "description": "glsl fragment shader viewer",
+  "bin": "server/index.js",
+  "author": "Ford Hurley <ford.hurley@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
