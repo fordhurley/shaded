@@ -23,8 +23,14 @@ export class Shader {
         req.headers.set("accept", "application/x-shader")
         fetch(req).then((res) => {
             return res.json()
-        }).then(({source}) => {
-            this.setShader(source)
+        }).then((data) => {
+            if (data.compiledSource) {
+                this.setShader(data.compiledSource)
+            } else {
+                this.setShader(data.source)
+            }
+        }).catch((err) => {
+            console.error(err)
         })
     }
 

@@ -4,6 +4,7 @@ const fs = require("fs")
 const path = require("path")
 
 const express = require("express")
+const glslify = require("glslify")
 const serveIndex = require("serve-index")
 
 const PORT = 3000 // TODO: arg
@@ -20,8 +21,11 @@ app.get(/^\/(.+\.glsl)/, (req, res) => {
 
     if (req.headers.accept === "application/x-shader") {
         fs.readFile(filePath, (err, data) => {
+            const source = data.toString()
+            const compiledSource = glslify.compile(source, {basedir: path.dirname(path.resolve(filePath))})
             res.json({
-                source: data.toString(),
+                source,
+                compiledSource,
             })
         })
         return
