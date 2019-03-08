@@ -9,7 +9,8 @@
     "bundle": "rollup -c rollup.config.js"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "serve-index": "^1.9.1"
   },
   "devDependencies": {
     "rollup": "^1.6.0",

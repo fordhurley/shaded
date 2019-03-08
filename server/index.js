@@ -2,6 +2,7 @@
 
 const express = require("express")
 const path = require("path")
+const serveIndex = require("serve-index")
 
 const PORT = 3000 // TODO: arg
 
@@ -29,12 +30,8 @@ app.get(/^\/(.+\.glsl)/, (req, res) => {
     res.sendFile(path.resolve(__dirname, "..", "html", "shader.html"))
 })
 
-// Catch-all for everything else:
-app.get(/^\/.*/, (req, res) => {
-    console.log("catch all:", req.path)
-    // TODO: if req.path is a directory, list files, otherwise show an error
-    res.sendFile(path.resolve(__dirname, "..", "html", "index.html"))
-})
+// Catch-all for everything else shows directory listings:
+app.get(/^\/.*/, serveIndex(".", {view: "details"}))
 
 app.listen(PORT, () => {
     console.log(`shader server listening on port ${PORT}!`)
