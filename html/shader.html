@@ -3,14 +3,17 @@
 
 <head>
     <meta charset="utf-8">
-
-    <script src="/bundle.js"></script>
+    <title>shade</title>
 </head>
 
 <body>
     <div class="shade"></div>
+
+    <script src="/bundle.js"></script>
+    <div class="shade"></div>
     <script>
         shade.init(document.querySelector(".shade"))
+        shade.load(window.location.pathname + ".glsl")
     </script>
 </body>
 

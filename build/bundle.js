@@ -224,8 +224,12 @@ var shade = (function (exports) {
       return unused;
   }
 
+  let canvas;
+
   function init(containerEl) {
-      const canvas = new ShaderCanvas();
+      if (!canvas) {
+          canvas = new ShaderCanvas();
+      }
       canvas.setSize(400, 400);
       canvas.setShader(`
         precision mediump float;
@@ -241,7 +245,19 @@ var shade = (function (exports) {
       containerEl.appendChild(canvas.domElement);
   }
 
+  function load(url) {
+      console.log("load:", url);
+      fetch(new Request(url)).then((res) => {
+          return res.text()
+      }).then((source) => {
+          console.log(source);
+          canvas.setShader(source);
+          canvas.render();
+      });
+  }
+
   exports.init = init;
+  exports.load = load;
 
   return exports;
 

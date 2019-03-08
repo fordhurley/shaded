@@ -1,7 +1,11 @@
 import {ShaderCanvas} from "shader-canvas"
 
+let canvas;
+
 export function init(containerEl) {
-    const canvas = new ShaderCanvas()
+    if (!canvas) {
+        canvas = new ShaderCanvas()
+    }
     canvas.setSize(400, 400)
     canvas.setShader(`
         precision mediump float;
@@ -15,4 +19,14 @@ export function init(containerEl) {
     canvas.render()
 
     containerEl.appendChild(canvas.domElement)
+}
+
+export function load(url) {
+    console.log("load:", url)
+    fetch(new Request(url)).then((res) => {
+        return res.text()
+    }).then((source) => {
+        canvas.setShader(source)
+        canvas.render()
+    })
 }
