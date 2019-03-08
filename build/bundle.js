@@ -229,6 +229,9 @@ var shade = (function (exports) {
           this.canvas = new ShaderCanvas();
           containerEl.appendChild(this.canvas.domElement);
 
+          this.animate = this.animate.bind(this);
+          this.mousemove = this.mousemove.bind(this);
+
           this.canvas.setSize(400, 400);
           this.setShader(`
             precision mediump float;
@@ -236,8 +239,6 @@ var shade = (function (exports) {
                 gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
             }
         `);
-
-          this.animate = this.animate.bind(this);
       }
 
       load(url) {
@@ -257,8 +258,15 @@ var shade = (function (exports) {
               this.canvas.setUniform("u_resolution", this.canvas.getResolution());
           }
 
+          this.isAnimated = testUniform("float", "u_time", this.source);
+
+          this.canvas.domElement.removeEventListener("mousemove", this.mousemove);
+          if (testUniform("vec2", "u_mouse", this.source)) {
+              this.canvas.domElement.addEventListener("mousemove", this.mousemove);
+          }
+
           cancelAnimationFrame(this.frameRequest);
-          if (testUniform("float", "u_time", this.source)) {
+          if (this.isAnimated) {
               this.frameRequest = requestAnimationFrame(this.animate);
           } else {
               this.canvas.render();
@@ -269,6 +277,18 @@ var shade = (function (exports) {
           this.frameRequest = requestAnimationFrame(this.animate);
           this.canvas.setUniform("u_time", timestamp / 1000);
           this.canvas.render();
+      }
+
+      mousemove(e) {
+          const mouse = [
+              e.offsetX / this.canvas.width,
+              1 - (e.offsetY / this.canvas.height),
+          ];
+          this.canvas.setUniform("u_mouse", mouse);
+
+          if (!this.isAnimated) {
+              this.canvas.render();
+          }
       }
   }
 
