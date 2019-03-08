@@ -9,13 +9,10 @@ export function init(containerEl) {
     canvas.setSize(400, 400)
     canvas.setShader(`
         precision mediump float;
-        uniform vec2 u_resolution;
         void main() {
-            vec2 uv = gl_FragCoord.xy / u_resolution;
-            gl_FragColor = vec4(uv.x, 0.0, uv.y, 1.0);
+            gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
         }
     `)
-    canvas.setUniform("u_resolution", canvas.getResolution())
     canvas.render()
 
     containerEl.appendChild(canvas.domElement)
@@ -25,8 +22,16 @@ export function load(url) {
     console.log("load:", url)
     fetch(new Request(url)).then((res) => {
         return res.text()
-    }).then((source) => {
-        canvas.setShader(source)
+    }).then(setShader)
+}
+
+export function setShader(source) {
+    canvas.setShader(source)
+    canvas.setUniform("u_resolution", canvas.getResolution())
+    function animate(timestamp) {
+        requestAnimationFrame(animate)
+        canvas.setUniform("u_time", timestamp / 1000)
         canvas.render()
-    })
+    }
+    requestAnimationFrame(animate)
 }
