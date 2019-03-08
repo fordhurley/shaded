@@ -5,7 +5,15 @@
   "bin": "server/index.js",
   "author": "Ford Hurley <ford.hurley@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "bundle": "rollup -c rollup.config.js"
+  },
   "dependencies": {
     "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "rollup": "^1.6.0",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "shader-canvas": "^0.8.0"
   }
 }
