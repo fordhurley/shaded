@@ -12,8 +12,8 @@
     <script src="/bundle.js"></script>
     <div class="shade"></div>
     <script>
-        shade.init(document.querySelector(".shade"))
-        shade.load(window.location.pathname + ".glsl")
+        const s = new shade.Shader(document.querySelector(".shade"))
+        s.load(window.location.pathname + ".glsl")
     </script>
 </body>
 
