@@ -246,8 +246,8 @@ var shade = (function (exports) {
           const req = new Request(url);
           req.headers.set("accept", "application/x-shader");
           fetch(req).then((res) => {
-              return res.text()
-          }).then((source) => {
+              return res.json()
+          }).then(({source}) => {
               this.setShader(source);
           });
       }

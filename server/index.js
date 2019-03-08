@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-const express = require("express")
+const fs = require("fs")
 const path = require("path")
+
+const express = require("express")
 const serveIndex = require("serve-index")
 
 const PORT = 3000 // TODO: arg
@@ -17,11 +19,10 @@ app.get(/^\/(.+\.glsl)/, (req, res) => {
     console.log("glsl:", filePath, req.headers.accept)
 
     if (req.headers.accept === "application/x-shader") {
-        // TODO: read the file, "compile" it, send it back in JSON body
-        res.sendFile(path.resolve(".", filePath), {
-            headers: {
-                "Content-Type": "text/plain; charset=utf-8"
-            }
+        fs.readFile(filePath, (err, data) => {
+            res.json({
+                source: data.toString(),
+            })
         })
         return
     }
