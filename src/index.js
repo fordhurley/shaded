@@ -50,11 +50,21 @@ export class Shader {
         }
 
         cancelAnimationFrame(this.frameRequest)
-        if (this.isAnimated) {
-            this.frameRequest = requestAnimationFrame(this.animate)
-        } else {
-            this.canvas.render()
-        }
+
+        const textureDirectives = parseTextureDirectives(this.source)
+        Promise.all(textureDirectives.map(({filePath, name}) => {
+            return loadImage(filePath).then((img) => {
+                this.canvas.setTexture(name, img)
+            })
+        })).then(() => {
+            if (this.isAnimated) {
+                this.frameRequest = requestAnimationFrame(this.animate)
+            } else {
+                this.canvas.render()
+            }
+        }).catch((reason) => {
+            console.error(reason);
+        })
     }
 
     animate(timestamp) {

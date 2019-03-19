@@ -274,11 +274,21 @@ var shade = (function (exports) {
           }
 
           cancelAnimationFrame(this.frameRequest);
-          if (this.isAnimated) {
-              this.frameRequest = requestAnimationFrame(this.animate);
-          } else {
-              this.canvas.render();
-          }
+
+          const textureDirectives = parseTextureDirectives(this.source);
+          Promise.all(textureDirectives.map(({filePath, name}) => {
+              return loadImage(filePath).then((img) => {
+                  this.canvas.setTexture(name, img);
+              })
+          })).then(() => {
+              if (this.isAnimated) {
+                  this.frameRequest = requestAnimationFrame(this.animate);
+              } else {
+                  this.canvas.render();
+              }
+          }).catch((reason) => {
+              console.error(reason);
+          });
       }
 
       animate(timestamp) {
@@ -303,6 +313,31 @@ var shade = (function (exports) {
   function testUniform(type, name, source) {
       const re = new RegExp(`^\\s*uniform\\s+${type}\\s+${name}`, "m");
       return re.test(source);
+  }
+
+  function parseTextureDirectives(source) {
+      // Looking for lines of the form:
+      // uniform sampler2D foo; // ../textures/foo.png
+      const re = /^\s*uniform\s+sampler2D\s+(\S+)\s*;\s*\/\/\s*(\S+)\s*$/gm;
+      const out = [];
+      let match = re.exec(source);
+      while (match !== null) {
+          const name = match[1];
+          const filePath = match[2];
+          out.push({name, filePath});
+          match = re.exec(source);
+      }
+      return out;
+  }
+
+  function loadImage(src) {
+      return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = () => { resolve(img); };
+          img.onerror = reject;
+          img.onabort = reject;
+      });
   }
 
   exports.Shader = Shader;
