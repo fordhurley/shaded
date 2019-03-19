@@ -6,8 +6,26 @@ const path = require("path")
 const express = require("express")
 const glslify = require("glslify")
 const serveIndex = require("serve-index")
+const WebSocket = require("ws")
 
 const PORT = 3000 // TODO: arg
+const WSPORT = 30000
+
+const wss = new WebSocket.Server({port: WSPORT})
+
+wss.on("connection", (ws) => {
+    ws.on("message", (data) => {
+        console.log(data)
+        const msg = JSON.parse(data)
+        switch (msg.command) {
+            case "watch":
+                console.log("watch:", msg.path)
+                break
+            default:
+                console.warn("unknown command:", msg.command)
+        }
+    })
+})
 
 const app = express()
 

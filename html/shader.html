@@ -14,6 +14,18 @@
     <script>
         const s = new shade.Shader(document.querySelector(".shade"))
         s.load(window.location.pathname)
+
+        const ws = new WebSocket("ws://localhost:30000")
+        ws.onopen = function() {
+            console.log("connected")
+            ws.send(JSON.stringify({
+                command: "watch",
+                path: window.location.pathname},
+            ))
+        }
+        ws.onmessage = function(event) {
+            console.log("received:", event.data)
+        }
     </script>
 </body>
 
