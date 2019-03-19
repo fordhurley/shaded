@@ -20,11 +20,19 @@
             console.log("connected")
             ws.send(JSON.stringify({
                 command: "watch",
-                path: window.location.pathname},
-            ))
+                path: window.location.pathname,
+            }))
         }
         ws.onmessage = function(event) {
             console.log("received:", event.data)
+            const msg = JSON.parse(event.data)
+            switch (msg.command) {
+                case "changed":
+                    s.load(window.location.pathname)
+                    break
+                default:
+                    console.warn("unknown command:", msg.command)
+            }
         }
     </script>
 </body>
