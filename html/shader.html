@@ -28,7 +28,9 @@
             const msg = JSON.parse(event.data)
             switch (msg.command) {
                 case "changed":
-                    s.load(window.location.pathname)
+                    if (msg.path === window.location.pathname) {
+                        s.load(window.location.pathname)
+                    }
                     break
                 default:
                     console.warn("unknown command:", msg.command)

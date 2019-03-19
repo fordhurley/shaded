@@ -17,6 +17,13 @@ const wss = new WebSocket.Server({port: WSPORT})
 
 wss.on("connection", (ws) => {
     const watcher = chokidar.watch()
+    watcher.on("change", (p) => {
+        console.log("change:", p)
+        ws.send(JSON.stringify({
+            command: "changed",
+            path: "/" + p,
+        }))
+    })
 
     ws.on("message", (data) => {
         console.log(data)
@@ -26,12 +33,6 @@ wss.on("connection", (ws) => {
                 msg.path = msg.path.slice(1)
                 console.log("watch:", msg.path)
                 watcher.add(msg.path)
-                watcher.on("change", (p) => {
-                    console.log("change:", p)
-                    if (p === msg.path) {
-                        ws.send(JSON.stringify({command: "changed", path: p}))
-                    }
-                })
                 break
             default:
                 console.warn("unknown command:", msg.command)
