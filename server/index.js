@@ -72,7 +72,7 @@ app.get(/^\/(.+\.glsl)/, (req, res) => {
 })
 
 // Everything that starts and ends with / shows directory listings:
-app.get(/^\/.*\/$/, serveIndex(".", {view: "details"}))
+app.get(/^\/.*\/?$/, serveIndex(".", {view: "details"}))
 
 // Catch all for everything else:
 app.use(express.static(path.resolve(".")))
