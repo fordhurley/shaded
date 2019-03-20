@@ -6,7 +6,8 @@
   "author": "Ford Hurley <ford.hurley@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "bundle": "rollup -c rollup.config.js"
+    "bundle": "rollup -c rollup.config.js",
+    "watch": "rollup -c rollup.config.js --watch"
   },
   "dependencies": {
     "chokidar": "^2.1.2",
