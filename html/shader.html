@@ -10,10 +10,17 @@
     <div class="shade"></div>
     <script src="/bundle.js"></script>
     <script>
+        let wsURL = "ws:"
+        if (window.location.protocol === "https:") {
+            wsURL = "wss:"
+        }
+        wsURL += "//" + window.location.hostname
+        wsURL += ":30000"
+
         shade.init({
             el: document.querySelector(".shade"),
             path: window.location.pathname,
-            wsURL: "ws://localhost:30000",
+            wsURL,
         })
     </script>
 </body>
