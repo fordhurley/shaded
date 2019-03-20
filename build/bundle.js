@@ -419,8 +419,15 @@ var shade = (function (exports) {
       }
   }
 
-  exports.Shader = Shader;
-  exports.WebSocket = WebSocket;
+  function init({el, path, wsURL}) {
+      const s = new Shader(el);
+      s.load(path);
+
+      const ws = new WebSocket(path, wsURL);
+      ws.onChanged((p) => { s.load(p); });
+  }
+
+  exports.init = init;
 
   return exports;
 

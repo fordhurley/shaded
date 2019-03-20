@@ -8,16 +8,13 @@
 
 <body>
     <div class="shade"></div>
-
     <script src="/bundle.js"></script>
     <script>
-        const path = window.location.pathname
-
-        const s = new shade.Shader(document.querySelector(".shade"))
-        s.load(path)
-
-        const ws = new shade.WebSocket(path, "ws://localhost:30000")
-        ws.onChanged((p) => { s.load(p) })
+        shade.init({
+            el: document.querySelector(".shade"),
+            path: window.location.pathname,
+            wsURL: "ws://localhost:30000",
+        })
     </script>
 </body>
 
