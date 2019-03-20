@@ -5,6 +5,13 @@ export class WebSocket {
 
         this.eventHandlers = {}
 
+        this.onConnect(() => {
+            this.sendWatch(this.path)
+        })
+        this.onDisconnect(() => {
+            this.scheduleReconnect()
+        })
+
         this.reconnect = this.reconnect.bind(this)
         this.reconnect()
     }
@@ -49,11 +56,15 @@ export class WebSocket {
         this.ws = new window.WebSocket(this.url)
         this.ws.onopen = (event) => {
             console.log("connected:", event)
-            this.sendWatch(this.path)
+            this.getEventListeners("connect").forEach((handler) => {
+                handler()
+            })
         }
         this.ws.onclose = (event) => {
             console.log("close:", event)
-            this.scheduleReconnect()
+            this.getEventListeners("disconnect").forEach((handler) => {
+                handler()
+            })
         }
         this.ws.onerror = (event) => {
             console.log("error:", event)
@@ -74,5 +85,13 @@ export class WebSocket {
     // callback called with a string path arg.
     onChanged(callback) {
         this.addEventListener("changed", callback)
+    }
+
+    onConnect(callback) {
+        this.addEventListener("connect", callback)
+    }
+
+    onDisconnect(callback) {
+        this.addEventListener("disconnect", callback)
     }
 }

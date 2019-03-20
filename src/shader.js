@@ -8,7 +8,7 @@ export class Shader {
         this.animate = this.animate.bind(this)
         this.mousemove = this.mousemove.bind(this)
 
-        this.canvas.setSize(400, 400)
+        this.resize()
         this.setShader(`
             precision mediump float;
             void main() {
@@ -83,6 +83,12 @@ export class Shader {
         if (!this.isAnimated) {
             this.canvas.render()
         }
+    }
+
+    resize() {
+        this.canvas.domElement.style.width = "100%";
+        const width = this.canvas.domElement.clientWidth;
+        this.canvas.setSize(width, width);
     }
 }
 
