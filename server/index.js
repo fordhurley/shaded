@@ -58,7 +58,8 @@ app.get(/^\/(.+\.glsl)/, (req, res) => {
     if (req.headers.accept === "application/x-shader") {
         fs.readFile(filePath, (err, data) => {
             const source = data.toString()
-            const compiledSource = glslify.compile(source, {basedir: path.dirname(path.resolve(filePath))})
+            const basedir = path.dirname(path.resolve(filePath))
+            const compiledSource = glslify.compile(source, {basedir})
             res.json({
                 source,
                 compiledSource,
