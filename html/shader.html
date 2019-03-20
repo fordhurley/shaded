@@ -14,8 +14,7 @@
         if (window.location.protocol === "https:") {
             wsURL = "wss:"
         }
-        wsURL += "//" + window.location.hostname
-        wsURL += ":30000"
+        wsURL += "//" + window.location.host
 
         shade.init({
             el: document.querySelector(".shade"),

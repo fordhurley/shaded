@@ -2,6 +2,7 @@
 
 const fs = require("fs")
 const path = require("path")
+const http = require("http")
 
 const chokidar = require("chokidar")
 const express = require("express")
@@ -10,10 +11,10 @@ const serveIndex = require("serve-index")
 const WebSocket = require("ws")
 
 const PORT = 3000 // TODO: arg
-const WSPORT = 30000
 
+const server = http.createServer()
 
-const wss = new WebSocket.Server({port: WSPORT})
+const wss = new WebSocket.Server({server})
 
 wss.on("connection", (ws) => {
     const watcher = chokidar.watch()
@@ -76,6 +77,8 @@ app.get(/^\/.*\/$/, serveIndex(".", {view: "details"}))
 // Catch all for everything else:
 app.use(express.static(path.resolve(".")))
 
-app.listen(PORT, () => {
+server.on("request", app)
+
+server.listen(PORT, () => {
     console.log(`shader server listening on port ${PORT}!`)
 })
