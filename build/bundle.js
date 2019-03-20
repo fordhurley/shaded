@@ -343,24 +343,12 @@ var shade = (function (exports) {
   class WebSocket {
       constructor(path, url) {
           this.path = path;
-
-          this.ws = new window.WebSocket(url);
-          this.ws.onopen = (event) => {
-              console.log("connected:", event);
-              this.sendWatch(this.path);
-          };
-          this.ws.onclose = (event) => {
-              console.log("close:", event);
-          };
-          this.ws.onerror = (event) => {
-              console.log("error:", event);
-          };
-          this.ws.onmessage = (event) => {
-              console.log("message:", event.data);
-              this.handleMessage(JSON.parse(event.data));
-          };
+          this.url = url;
 
           this.eventHandlers = {};
+
+          this.reconnect = this.reconnect.bind(this);
+          this.reconnect();
       }
 
       handleMessage(msg) {
@@ -389,6 +377,33 @@ var shade = (function (exports) {
           }
           this.eventHandlers[name] = handlers;
           return handlers
+      }
+
+      scheduleReconnect() {
+          if (this.reconnectTimeout) {
+              window.clearTimeout(this.reconnectTimeout);
+          }
+          // TODO: back off
+          this.reconnectTimeout = window.setTimeout(this.reconnect, 10*1000);
+      }
+
+      reconnect() {
+          this.ws = new window.WebSocket(this.url);
+          this.ws.onopen = (event) => {
+              console.log("connected:", event);
+              this.sendWatch(this.path);
+          };
+          this.ws.onclose = (event) => {
+              console.log("close:", event);
+              this.scheduleReconnect();
+          };
+          this.ws.onerror = (event) => {
+              console.log("error:", event);
+          };
+          this.ws.onmessage = (event) => {
+              console.log("message:", event.data);
+              this.handleMessage(JSON.parse(event.data));
+          };
       }
 
       sendWatch(path) {
