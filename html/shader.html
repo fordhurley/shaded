@@ -10,32 +10,14 @@
     <div class="shade"></div>
 
     <script src="/bundle.js"></script>
-    <div class="shade"></div>
     <script>
-        const s = new shade.Shader(document.querySelector(".shade"))
-        s.load(window.location.pathname)
+        const path = window.location.pathname
 
-        const ws = new WebSocket("ws://localhost:30000")
-        ws.onopen = function() {
-            console.log("connected")
-            ws.send(JSON.stringify({
-                command: "watch",
-                path: window.location.pathname,
-            }))
-        }
-        ws.onmessage = function(event) {
-            console.log("received:", event.data)
-            const msg = JSON.parse(event.data)
-            switch (msg.command) {
-                case "changed":
-                    if (msg.path === window.location.pathname) {
-                        s.load(window.location.pathname)
-                    }
-                    break
-                default:
-                    console.warn("unknown command:", msg.command)
-            }
-        }
+        const s = new shade.Shader(document.querySelector(".shade"))
+        s.load(path)
+
+        const ws = new shade.WebSocket(path, "ws://localhost:30000")
+        ws.onChanged((p) => { s.load(p) })
     </script>
 </body>
 
