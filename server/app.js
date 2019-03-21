@@ -5,32 +5,51 @@ const express = require("express")
 const glslify = require("glslify")
 const serveIndex = require("serve-index")
 
+function serveShader(filePath, res) {
+    fs.readFile(filePath, (error, data) => {
+        if (error) {
+            console.error("error reading shader:", error)
+            if (error.code === "ENOENT") {
+                res.status(404)
+                res.json({error: "not found"})
+                return
+            }
+            res.status(500)
+            res.json({error})
+            return
+        }
+
+        const source = data.toString()
+
+        // Run glslify relative to the file, so that relative imports
+        // resolve relative to the file, and absolute imports resolve
+        // with the usual rules:
+        const basedir = path.dirname(path.resolve(filePath))
+        const compiledSource = glslify.compile(source, {basedir})
+
+        res.json({source, compiledSource})
+    })
+}
+
 module.exports = function() {
     const app = express()
 
+    const bundleJS = path.resolve(__dirname, "..", "build", "bundle.js")
+    const shaderHTML = path.resolve(__dirname, "..", "html", "shader.html")
+
     app.get("/bundle.js", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "..", "build", "bundle.js"))
+        res.sendFile(bundleJS)
     })
 
     app.get(/^\/(.+\.glsl)/, (req, res) => {
-        const filePath = req.params[0] // regex group
-        console.log("glsl:", filePath, req.headers.accept)
-
         if (req.headers.accept === "application/x-shader") {
-            fs.readFile(filePath, (err, data) => {
-                const source = data.toString()
-                const basedir = path.dirname(path.resolve(filePath))
-                const compiledSource = glslify.compile(source, {basedir})
-                res.json({
-                    source,
-                    compiledSource,
-                })
-            })
+            const filePath = req.params[0] // first regex group
+            serveShader(filePath, res)
             return
         }
 
         // Otherwise, serve the shader page to the browser:
-        res.sendFile(path.resolve(__dirname, "..", "html", "shader.html"))
+        res.sendFile(shaderHTML)
     })
 
     // Everything that starts and ends with / shows directory listings:

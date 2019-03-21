@@ -8,7 +8,6 @@ module.exports = function(server) {
         const watcher = chokidar.watch()
 
         watcher.on("change", (p) => {
-            console.log("change:", p)
             ws.send(JSON.stringify({
                 command: "changed",
                 path: "/" + p,
@@ -16,16 +15,14 @@ module.exports = function(server) {
         })
 
         ws.on("message", (data) => {
-            console.log(data)
             const msg = JSON.parse(data)
             switch (msg.command) {
                 case "watch":
                     msg.path = msg.path.slice(1)
-                    console.log("watch:", msg.path)
                     watcher.add(msg.path)
                     break
                 default:
-                    console.warn("unknown command:", msg.command)
+                    console.error("unknown command:", msg.command)
             }
         })
 
