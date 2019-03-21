@@ -13,6 +13,7 @@
     "chokidar": "^2.1.2",
     "express": "^4.16.4",
     "glslify": "^7.0.0",
+    "minimist": "^1.2.0",
     "serve-index": "^1.9.1",
     "ws": "^6.2.0"
   },
