@@ -1,29 +1,26 @@
 export class Controls {
     constructor(containerEl, path) {
-        this.domElement = document.createElement("span")
-        Object.assign(this.domElement.style, {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-        })
+        this.domElement = document.createElement("div")
         containerEl.appendChild(this.domElement)
 
         const navUp = document.createElement("a")
         navUp.href = dirname(path)
         navUp.textContent = "up"
-        this.domElement.appendChild(navUp)
+        const div = document.createElement("div")
+        div.appendChild(navUp)
+        this.domElement.appendChild(div)
 
-        this.status = document.createElement("span")
+        this.status = document.createElement("div")
         this.domElement.appendChild(this.status)
         this.setDisconnected()
     }
 
     setConnected() {
-        this.status.textContent = "✓"
+        this.status.textContent = "ws: ✓"
     }
 
     setDisconnected() {
-        this.status.textContent = "𐄂"
+        this.status.textContent = "ws: 𐄂"
     }
 }
 

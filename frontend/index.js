@@ -4,9 +4,8 @@ import {WebSocket} from "./websocket"
 
 export function init({el, path, wsURL}) {
     Object.assign(el.style, {
-        width: "400px",
-        fontFamily: "monospace",
-        fontSize: "11pt",
+        fontFamily: "'Andale Mono', monospace",
+        fontSize: "10pt",
     })
 
     const s = new Shader(el)
