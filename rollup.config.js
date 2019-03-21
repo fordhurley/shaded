@@ -1,9 +1,9 @@
 const resolve = require('rollup-plugin-node-resolve')
 
 module.exports = {
-  input: 'src/index.js',
+  input: 'frontend/index.js',
   output: {
-    file: 'build/bundle.js',
+    file: 'build/frontend.js',
     name: 'shade',
     format: 'iife'
   },
