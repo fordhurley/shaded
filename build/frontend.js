@@ -331,12 +331,13 @@ var shade = (function (exports) {
         }
 
         mousemove(e) {
+            const rect = this.canvas.domElement.getBoundingClientRect();
             const mouse = [
-                e.offsetX / this.canvas.width,
-                1 - (e.offsetY / this.canvas.height),
+                (e.clientX - rect.left) * window.devicePixelRatio,
+                this.canvas.domElement.height - (e.clientY - rect.top) * window.devicePixelRatio,
             ];
-            this.canvas.setUniform("u_mouse", mouse);
 
+            this.canvas.setUniform("u_mouse", mouse);
             if (!this.isAnimated) {
                 this.canvas.render();
             }
