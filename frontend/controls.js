@@ -13,6 +13,10 @@ export class Controls {
         this.status = document.createElement("div")
         this.domElement.appendChild(this.status)
         this.setDisconnected()
+
+        this.error = document.createElement("pre")
+        this.error.style.color = "red"
+        this.domElement.appendChild(this.error)
     }
 
     setConnected() {
@@ -21,6 +25,10 @@ export class Controls {
 
     setDisconnected() {
         this.status.textContent = "ws: 𐄂"
+    }
+
+    setError(error) {
+        this.error.textContent = error ? error : ""
     }
 }
 

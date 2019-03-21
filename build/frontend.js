@@ -16,6 +16,10 @@ var shade = (function (exports) {
             this.status = document.createElement("div");
             this.domElement.appendChild(this.status);
             this.setDisconnected();
+
+            this.error = document.createElement("pre");
+            this.error.style.color = "red";
+            this.domElement.appendChild(this.error);
         }
 
         setConnected() {
@@ -24,6 +28,10 @@ var shade = (function (exports) {
 
         setDisconnected() {
             this.status.textContent = "ws: 𐄂";
+        }
+
+        setError(error) {
+            this.error.textContent = error ? error : "";
         }
     }
 
@@ -256,6 +264,8 @@ var shade = (function (exports) {
 
     class Shader {
         constructor(containerEl) {
+            this.eventHandlers = {};
+
             this.canvas = new ShaderCanvas();
             this.canvas.setSize(400, 400);
             containerEl.appendChild(this.canvas.domElement);
@@ -269,6 +279,23 @@ var shade = (function (exports) {
                 gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
             }
         `);
+        }
+
+        addEventListener(name, callback) {
+            this.getEventListeners(name).push(callback);
+        }
+
+        getEventListeners(name) {
+            let handlers = this.eventHandlers[name];
+            if (!handlers) {
+                handlers = [];
+            }
+            this.eventHandlers[name] = handlers;
+            return handlers
+        }
+
+        onError(callback) {
+            this.addEventListener("error", callback);
         }
 
         load(url) {
@@ -285,12 +312,18 @@ var shade = (function (exports) {
                 }
             }).catch((err) => {
                 console.error(err);
+                this.getEventListeners("error").forEach((callback) => { callback(err); });
             });
         }
 
         setShader(source) {
             this.source = source;
-            this.canvas.setShader(this.source);
+            const errors = this.canvas.setShader(this.source);
+            if (errors && errors.length > 0) {
+                const msgs = errors.map((e) => e.text);
+                const error = msgs.join("\n");
+                this.getEventListeners("error").forEach((callback) => { callback(error); });
+            }
 
             if (testUniform("vec2", "u_resolution", this.source)) {
                 this.canvas.setUniform("u_resolution", this.canvas.getResolution());
@@ -318,6 +351,8 @@ var shade = (function (exports) {
                 }
             }).catch((reason) => {
                 console.error(reason);
+                // FIXME: show which texture(s) failed:
+                this.getEventListeners("error").forEach((callback) => { callback("texture error"); });
             });
         }
 
@@ -471,19 +506,24 @@ var shade = (function (exports) {
 
     function init({el, path, wsURL}) {
         Object.assign(el.style, {
-            fontFamily: "'Andale Mono', monospace",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
             fontSize: "10pt",
         });
 
         const s = new Shader(el);
-        s.load(path);
 
         const c = new Controls(el, path);
 
         const ws = new WebSocket(path, wsURL);
         ws.onConnect(() => { c.setConnected(); });
         ws.onDisconnect(() => { c.setDisconnected(); });
-        ws.onChanged((p) => { s.load(p); });
+        ws.onChanged((p) => {
+            c.setError();
+            s.load(p);
+        });
+
+        s.onError((e) => { c.setError(e); });
+        s.load(path);
     }
 
     exports.init = init;

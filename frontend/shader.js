@@ -2,6 +2,8 @@ import {ShaderCanvas} from "shader-canvas"
 
 export class Shader {
     constructor(containerEl) {
+        this.eventHandlers = {}
+
         this.canvas = new ShaderCanvas()
         this.canvas.setSize(400, 400)
         containerEl.appendChild(this.canvas.domElement)
@@ -15,6 +17,23 @@ export class Shader {
                 gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
             }
         `)
+    }
+
+    addEventListener(name, callback) {
+        this.getEventListeners(name).push(callback)
+    }
+
+    getEventListeners(name) {
+        let handlers = this.eventHandlers[name]
+        if (!handlers) {
+            handlers = []
+        }
+        this.eventHandlers[name] = handlers
+        return handlers
+    }
+
+    onError(callback) {
+        this.addEventListener("error", callback)
     }
 
     load(url) {
@@ -31,12 +50,18 @@ export class Shader {
             }
         }).catch((err) => {
             console.error(err)
+            this.getEventListeners("error").forEach((callback) => { callback(err) });
         })
     }
 
     setShader(source) {
         this.source = source
-        this.canvas.setShader(this.source)
+        const errors = this.canvas.setShader(this.source)
+        if (errors && errors.length > 0) {
+            const msgs = errors.map((e) => e.text)
+            const error = msgs.join("\n")
+            this.getEventListeners("error").forEach((callback) => { callback(error) });
+        }
 
         if (testUniform("vec2", "u_resolution", this.source)) {
             this.canvas.setUniform("u_resolution", this.canvas.getResolution())
@@ -64,6 +89,8 @@ export class Shader {
             }
         }).catch((reason) => {
             console.error(reason);
+            // FIXME: show which texture(s) failed:
+            this.getEventListeners("error").forEach((callback) => { callback("texture error") });
         })
     }
 
