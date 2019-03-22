@@ -1,3 +1,4 @@
+import {breadcrumbs} from "./breadcrumbs"
 import {Listener} from "./listener"
 
 export class Controls {
@@ -7,18 +8,7 @@ export class Controls {
         this.domElement = document.createElement("div")
         containerEl.appendChild(this.domElement)
 
-        const nav = document.createElement("div")
-        this.domElement.appendChild(nav)
-
-        const currPath = document.createElement("span")
-        currPath.textContent = path
-        nav.appendChild(currPath)
-
-        const up = document.createElement("a")
-        up.href = dirname(path)
-        up.textContent = "up"
-        up.style.marginLeft = "0.5em"
-        nav.appendChild(up)
+        this.domElement.appendChild(breadcrumbs(path))
 
         this.resolution = document.createElement("div")
         this.domElement.appendChild(this.resolution)

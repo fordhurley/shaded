@@ -1,6 +1,41 @@
 var shade = (function (exports) {
     'use strict';
 
+    function breadcrumbs(path) {
+        const el = document.createElement("div");
+
+        const spacing = "0.5em";
+
+        path.split("/").forEach((part, i, parts) => {
+            if (i === 0) {
+                // This is the empty element from the leading "/"
+                return
+            }
+
+            if (i > 1) {
+                const sep = document.createElement("span");
+                sep.textContent = "/";
+                sep.style.marginRight = spacing;
+                el.appendChild(sep);
+            }
+
+            if (i === parts.length - 1) {
+                const crumb = document.createElement("span");
+                crumb.textContent = part;
+                el.appendChild(crumb);
+                return
+            }
+
+            const crumb = document.createElement("a");
+            crumb.textContent = part;
+            crumb.style.marginRight = spacing;
+            crumb.href = parts.slice(0, i+1).join("/");
+            el.appendChild(crumb);
+        });
+
+        return el
+    }
+
     class Listener {
         constructor() {
             this.handlers = {};
@@ -31,18 +66,7 @@ var shade = (function (exports) {
             this.domElement = document.createElement("div");
             containerEl.appendChild(this.domElement);
 
-            const nav = document.createElement("div");
-            this.domElement.appendChild(nav);
-
-            const currPath = document.createElement("span");
-            currPath.textContent = path;
-            nav.appendChild(currPath);
-
-            const up = document.createElement("a");
-            up.href = dirname(path);
-            up.textContent = "up";
-            up.style.marginLeft = "0.5em";
-            nav.appendChild(up);
+            this.domElement.appendChild(breadcrumbs(path));
 
             this.resolution = document.createElement("div");
             this.domElement.appendChild(this.resolution);
@@ -123,10 +147,6 @@ var shade = (function (exports) {
         setError(error) {
             this.error.textContent = error ? error : "";
         }
-    }
-
-    function dirname(path) {
-        return path.match(/.*\//);
     }
 
     const defaultVertexShader = `
