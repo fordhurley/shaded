@@ -41,6 +41,12 @@ var shade = (function (exports) {
             this.resolution = document.createElement("div");
             this.domElement.appendChild(this.resolution);
 
+            this.framerate = document.createElement("div");
+            this.domElement.appendChild(this.framerate);
+            this.setFramerate(0);
+            this.frames = 0;
+            this.lastTimestamp = performance.now();
+
             const connection = document.createElement("div");
             this.domElement.appendChild(connection);
 
@@ -59,6 +65,32 @@ var shade = (function (exports) {
             this.error = document.createElement("pre");
             this.error.style.color = "red";
             this.domElement.appendChild(this.error);
+
+            this.animate = this.animate.bind(this);
+            window.requestAnimationFrame(this.animate);
+        }
+
+        reportFrame() {
+            this.frames++;
+        }
+
+        setResolution([width, height]) {
+            this.resolution.textContent = `${width}×${height}`;
+        }
+
+        animate(timestamp) {
+            window.requestAnimationFrame(this.animate);
+            if (timestamp - this.lastTimestamp < 500) {
+                return
+            }
+            const deltaSeconds = (timestamp - this.lastTimestamp) / 1000;
+            this.setFramerate(this.frames / deltaSeconds);
+            this.frames = 0;
+            this.lastTimestamp = timestamp;
+        }
+
+        setFramerate(fps) {
+            this.framerate.textContent = `${fps.toFixed(2)} fps`;
         }
 
         setConnected() {
@@ -80,10 +112,6 @@ var shade = (function (exports) {
 
         onReconnect(callback) {
             this.listener.addEventListener("reconnect", callback);
-        }
-
-        setResolution([width, height]) {
-            this.resolution.textContent = `${width}×${height}`;
         }
 
         setError(error) {
@@ -378,7 +406,7 @@ var shade = (function (exports) {
             bindResize(containerEl, (width, height) => {
                 this.canvas.setSize(width, height);
                 this.updateResolution();
-                this.canvas.render();
+                this.render();
             });
 
             this.animate = this.animate.bind(this);
@@ -398,6 +426,17 @@ var shade = (function (exports) {
 
         onResize(callback) {
             this.listener.addEventListener("resize", callback);
+        }
+
+        onRender(callback) {
+            this.listener.addEventListener("render", callback);
+        }
+
+        render() {
+            this.canvas.render();
+            this.listener.forEachHandler("render", (callback) => {
+                callback();
+            });
         }
 
         load(url) {
@@ -447,7 +486,7 @@ var shade = (function (exports) {
                 if (this.isAnimated) {
                     this.frameRequest = requestAnimationFrame(this.animate);
                 } else {
-                    this.canvas.render();
+                    this.render();
                 }
             }).catch((reason) => {
                 console.error(reason);
@@ -471,7 +510,7 @@ var shade = (function (exports) {
         animate(timestamp) {
             this.frameRequest = requestAnimationFrame(this.animate);
             this.canvas.setUniform("u_time", timestamp / 1000);
-            this.canvas.render();
+            this.render();
         }
 
         mousemove(e) {
@@ -483,7 +522,7 @@ var shade = (function (exports) {
 
             this.canvas.setUniform("u_mouse", mouse);
             if (!this.isAnimated) {
-                this.canvas.render();
+                this.render();
             }
         }
     }
@@ -621,17 +660,18 @@ var shade = (function (exports) {
         const c = new Controls(el, path);
 
         const ws = new WebSocket(path, wsURL);
-        ws.onConnect(() => { c.setConnected(); });
-        ws.onDisconnect(() => { c.setDisconnected(); });
+        ws.onConnect(c.setConnected.bind(c));
+        ws.onDisconnect(c.setDisconnected.bind(c));
         ws.onChanged((p) => {
             c.setError();
             s.load(p);
         });
 
-        c.onReconnect(() => { ws.reconnect(); });
+        c.onReconnect(ws.reconnect.bind(ws));
 
-        s.onResize((r) => { c.setResolution(r); });
-        s.onError((e) => { c.setError(e); });
+        s.onRender(c.reportFrame.bind(c));
+        s.onResize(c.setResolution.bind(c));
+        s.onError(c.setError.bind(c));
         s.load(path);
     }
 

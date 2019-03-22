@@ -16,16 +16,17 @@ export function init({el, path, wsURL}) {
     const c = new Controls(el, path)
 
     const ws = new WebSocket(path, wsURL)
-    ws.onConnect(() => { c.setConnected() })
-    ws.onDisconnect(() => { c.setDisconnected() })
+    ws.onConnect(c.setConnected.bind(c))
+    ws.onDisconnect(c.setDisconnected.bind(c))
     ws.onChanged((p) => {
         c.setError()
         s.load(p)
     })
 
-    c.onReconnect(() => { ws.reconnect() })
+    c.onReconnect(ws.reconnect.bind(ws))
 
-    s.onResize((r) => { c.setResolution(r) })
-    s.onError((e) => { c.setError(e) });
+    s.onRender(c.reportFrame.bind(c))
+    s.onResize(c.setResolution.bind(c))
+    s.onError(c.setError.bind(c))
     s.load(path)
 }

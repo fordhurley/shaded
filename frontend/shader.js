@@ -18,7 +18,7 @@ export class Shader {
         bindResize(containerEl, (width, height) => {
             this.canvas.setSize(width, height)
             this.updateResolution()
-            this.canvas.render()
+            this.render()
         })
 
         this.animate = this.animate.bind(this)
@@ -38,6 +38,17 @@ export class Shader {
 
     onResize(callback) {
         this.listener.addEventListener("resize", callback)
+    }
+
+    onRender(callback) {
+        this.listener.addEventListener("render", callback)
+    }
+
+    render() {
+        this.canvas.render()
+        this.listener.forEachHandler("render", (callback) => {
+            callback()
+        })
     }
 
     load(url) {
@@ -87,7 +98,7 @@ export class Shader {
             if (this.isAnimated) {
                 this.frameRequest = requestAnimationFrame(this.animate)
             } else {
-                this.canvas.render()
+                this.render()
             }
         }).catch((reason) => {
             console.error(reason);
@@ -111,7 +122,7 @@ export class Shader {
     animate(timestamp) {
         this.frameRequest = requestAnimationFrame(this.animate)
         this.canvas.setUniform("u_time", timestamp / 1000)
-        this.canvas.render()
+        this.render()
     }
 
     mousemove(e) {
@@ -123,7 +134,7 @@ export class Shader {
 
         this.canvas.setUniform("u_mouse", mouse);
         if (!this.isAnimated) {
-            this.canvas.render()
+            this.render()
         }
     }
 }

@@ -17,6 +17,12 @@ export class Controls {
         this.resolution = document.createElement("div")
         this.domElement.appendChild(this.resolution)
 
+        this.framerate = document.createElement("div")
+        this.domElement.appendChild(this.framerate)
+        this.setFramerate(0)
+        this.frames = 0
+        this.lastTimestamp = performance.now()
+
         const connection = document.createElement("div")
         this.domElement.appendChild(connection)
 
@@ -35,6 +41,32 @@ export class Controls {
         this.error = document.createElement("pre")
         this.error.style.color = "red"
         this.domElement.appendChild(this.error)
+
+        this.animate = this.animate.bind(this)
+        window.requestAnimationFrame(this.animate)
+    }
+
+    reportFrame() {
+        this.frames++
+    }
+
+    setResolution([width, height]) {
+        this.resolution.textContent = `${width}×${height}`
+    }
+
+    animate(timestamp) {
+        window.requestAnimationFrame(this.animate)
+        if (timestamp - this.lastTimestamp < 500) {
+            return
+        }
+        const deltaSeconds = (timestamp - this.lastTimestamp) / 1000
+        this.setFramerate(this.frames / deltaSeconds)
+        this.frames = 0
+        this.lastTimestamp = timestamp
+    }
+
+    setFramerate(fps) {
+        this.framerate.textContent = `${fps.toFixed(2)} fps`
     }
 
     setConnected() {
@@ -56,10 +88,6 @@ export class Controls {
 
     onReconnect(callback) {
         this.listener.addEventListener("reconnect", callback)
-    }
-
-    setResolution([width, height]) {
-        this.resolution.textContent = `${width}×${height}`
     }
 
     setError(error) {
