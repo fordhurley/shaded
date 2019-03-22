@@ -13,8 +13,11 @@ var shade = (function (exports) {
             div.appendChild(navUp);
             this.domElement.appendChild(div);
 
-            this.status = document.createElement("div");
-            this.domElement.appendChild(this.status);
+            this.currentSize = document.createElement("div");
+            this.domElement.appendChild(this.currentSize);
+
+            this.connStatus = document.createElement("div");
+            this.domElement.appendChild(this.connStatus);
             this.setDisconnected();
 
             this.error = document.createElement("pre");
@@ -23,11 +26,15 @@ var shade = (function (exports) {
         }
 
         setConnected() {
-            this.status.textContent = "ws: ✓";
+            this.connStatus.textContent = "connected";
         }
 
         setDisconnected() {
-            this.status.textContent = "ws: 𐄂";
+            this.connStatus.textContent = "disconnected";
+        }
+
+        setSize(width, height) {
+            this.currentSize.textContent = `${width}×${height}`;
         }
 
         setError(error) {
@@ -344,7 +351,7 @@ var shade = (function (exports) {
 
             bindResize(containerEl, (width, height) => {
                 this.canvas.setSize(width, height);
-                this.updateResolution();
+                this.updateSize();
                 this.canvas.render();
             });
 
@@ -361,6 +368,10 @@ var shade = (function (exports) {
 
         onError(callback) {
             this.listener.addEventListener("error", callback);
+        }
+
+        onResize(callback) {
+            this.listener.addEventListener("resize", callback);
         }
 
         load(url) {
@@ -390,7 +401,7 @@ var shade = (function (exports) {
                 this.listener.forEachHandler("error", (callback) => { callback(error); });
             }
 
-            this.updateResolution();
+            this.updateSize();
 
             this.isAnimated = testUniform("float", "u_time", this.source);
 
@@ -421,10 +432,14 @@ var shade = (function (exports) {
             });
         }
 
-        updateResolution() {
+        updateSize() {
+            const [w, h] = this.canvas.getResolution();
             if (testUniform("vec2", "u_resolution", this.source)) {
-                this.canvas.setUniform("u_resolution", this.canvas.getResolution());
+                this.canvas.setUniform("u_resolution", [w, h]);
             }
+            this.listener.forEachHandler("resize", (callback) => {
+                callback(w, h);
+            });
         }
 
         animate(timestamp) {
@@ -583,6 +598,7 @@ var shade = (function (exports) {
             s.load(p);
         });
 
+        s.onResize((w, h) => { c.setSize(w, h); });
         s.onError((e) => { c.setError(e); });
         s.load(path);
     }

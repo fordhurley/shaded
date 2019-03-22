@@ -10,8 +10,11 @@ export class Controls {
         div.appendChild(navUp)
         this.domElement.appendChild(div)
 
-        this.status = document.createElement("div")
-        this.domElement.appendChild(this.status)
+        this.currentSize = document.createElement("div")
+        this.domElement.appendChild(this.currentSize)
+
+        this.connStatus = document.createElement("div")
+        this.domElement.appendChild(this.connStatus)
         this.setDisconnected()
 
         this.error = document.createElement("pre")
@@ -20,11 +23,15 @@ export class Controls {
     }
 
     setConnected() {
-        this.status.textContent = "ws: ✓"
+        this.connStatus.textContent = "connected"
     }
 
     setDisconnected() {
-        this.status.textContent = "ws: 𐄂"
+        this.connStatus.textContent = "disconnected"
+    }
+
+    setSize(width, height) {
+        this.currentSize.textContent = `${width}×${height}`
     }
 
     setError(error) {

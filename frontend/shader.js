@@ -17,7 +17,7 @@ export class Shader {
 
         bindResize(containerEl, (width, height) => {
             this.canvas.setSize(width, height)
-            this.updateResolution()
+            this.updateSize()
             this.canvas.render()
         })
 
@@ -34,6 +34,10 @@ export class Shader {
 
     onError(callback) {
         this.listener.addEventListener("error", callback)
+    }
+
+    onResize(callback) {
+        this.listener.addEventListener("resize", callback)
     }
 
     load(url) {
@@ -63,7 +67,7 @@ export class Shader {
             this.listener.forEachHandler("error", (callback) => { callback(error) });
         }
 
-        this.updateResolution()
+        this.updateSize()
 
         this.isAnimated = testUniform("float", "u_time", this.source)
 
@@ -94,10 +98,14 @@ export class Shader {
         })
     }
 
-    updateResolution() {
+    updateSize() {
+        const [w, h] = this.canvas.getResolution()
         if (testUniform("vec2", "u_resolution", this.source)) {
-            this.canvas.setUniform("u_resolution", this.canvas.getResolution())
+            this.canvas.setUniform("u_resolution", [w, h])
         }
+        this.listener.forEachHandler("resize", (callback) => {
+            callback(w, h)
+        })
     }
 
     animate(timestamp) {
