@@ -14,6 +14,14 @@ void main() {
   uv.x *= aspect;
   // Center:
   uv.x += (1.0 - aspect) / 2.0;
+
+  // Ensure that the image always fits, scaling down if necessary
+  // (continuing to preserve the aspect ratio and centering):
+  if (aspect < 1.0) {
+    uv -= (1.0 - aspect) / 2.0;
+    uv /= aspect;
+  }
+
   // Tile:
   uv = fract(uv);
 
