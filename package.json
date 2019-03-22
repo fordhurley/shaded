@@ -2,11 +2,11 @@
   "name": "shade",
   "version": "1.0.0",
   "description": "glsl fragment shader viewer",
-  "bin": "server/index.js",
+  "bin": "./server/index.js",
   "author": "Ford Hurley <ford.hurley@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "bundle": "rollup -c rollup.config.js",
+    "preinstall": "rollup -c rollup.config.js",
     "watch": "rollup -c rollup.config.js --watch"
   },
   "dependencies": {
@@ -15,12 +15,10 @@
     "glslify": "^7.0.0",
     "minimist": "^1.2.0",
     "opn": "^5.5.0",
-    "serve-index": "^1.9.1",
-    "ws": "^6.2.0"
-  },
-  "devDependencies": {
     "rollup": "^1.6.0",
     "rollup-plugin-node-resolve": "^4.0.1",
-    "shader-canvas": "^0.8.1"
+    "serve-index": "^1.9.1",
+    "shader-canvas": "^0.8.1",
+    "ws": "^6.2.0"
   }
 }
