@@ -2,50 +2,54 @@
 
 const http = require("http")
 
+const open = require("opn")
 const parseArgs = require("minimist")
 
 const app = require("./app")
 const wss = require("./wss")
 
-function serve(port) {
+function serve(port, openBrowser) {
     const server = http.createServer()
+
     wss(server)
+
     server.on("request", app())
+
     server.listen(port, () => {
-        console.log(`shade listening at http://localhost:${port}`)
+        const uri = `http://localhost:${port}`
+        console.log(`shade listening at ${uri}`)
+        if (openBrowser) {
+            open(uri)
+        }
     })
 }
 
-function usage() {
-    console.error("usage of shade:")
-    console.error("  --help, -h")
-    console.error("     show this help")
-    console.error("  --port <port>, -p <port>")
-    console.error("     listen on port (default 3000)")
-}
-
-function isNumber(n) {
-    if (typeof n !== "number") {
-        return false
-    }
-    return !isNaN(n) && isFinite(n)
-}
+const usage = `usage of shade:
+  --help, -h
+     show this help
+  --port <port>, -p <port>
+     listen on port (default 3000)
+  --open, -o
+     open the browser when the server starts (default false)
+`
 
 function main(opts) {
-    if (opts.h || opts.help) {
-        usage()
+    if (opts.help || opts.h) {
+        console.error(usage)
         return
     }
 
     const port = opts.port || opts.p || 3000
 
-    if (!isNumber(port)) {
+    if (typeof port !== "number") {
         console.error("ERROR: invalid port option:", port)
-        usage()
+        console.error(usage)
         process.exit(1)
     }
 
-    serve(port)
+    const openBrowser = opts.open || opts.o
+
+    serve(port, openBrowser)
 }
 
 main(parseArgs(process.argv))
