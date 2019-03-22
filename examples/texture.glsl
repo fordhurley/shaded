@@ -1,10 +1,18 @@
 precision mediump float;
 
+uniform vec2 u_resolution;
+
+// The end-of-line comment on this uniform specifies how to load the image.
+// Valid forms:
+//   uniform sampler2D inThisDirectory; // foo.jpg
+//   uniform sampler2D inOtherDirectory; // ../other_textures/bar.png
+//   uniform sampler2D withAbsolutePath; // /Users/ford/textures/blah.bmp
+uniform sampler2D u_texture; // mandrill.jpg
+
 // Texture image source:
 // http://sipi.usc.edu/database/database.php?volume=misc&image=10#top
-
-uniform vec2 u_resolution;
-uniform sampler2D u_texture; // ./mandrill.jpg
+// "Scan from a magazine picture. Copyright belongs to original publisher or
+// photographer."
 
 void main() {
   vec2 uv = gl_FragCoord.xy / u_resolution;
