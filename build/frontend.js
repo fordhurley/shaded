@@ -31,12 +31,18 @@ var shade = (function (exports) {
             this.domElement = document.createElement("div");
             containerEl.appendChild(this.domElement);
 
-            const navUp = document.createElement("a");
-            navUp.href = dirname(path);
-            navUp.textContent = "up";
-            const div = document.createElement("div");
-            div.appendChild(navUp);
-            this.domElement.appendChild(div);
+            const nav = document.createElement("div");
+            this.domElement.appendChild(nav);
+
+            const currPath = document.createElement("span");
+            currPath.textContent = path;
+            nav.appendChild(currPath);
+
+            const up = document.createElement("a");
+            up.href = dirname(path);
+            up.textContent = "up";
+            up.style.marginLeft = "0.5em";
+            nav.appendChild(up);
 
             this.resolution = document.createElement("div");
             this.domElement.appendChild(this.resolution);
