@@ -1,12 +1,24 @@
 import {ShaderCanvas} from "shader-canvas"
 
+import {bindResize} from "./resize"
+
 export class Shader {
     constructor(containerEl) {
+        containerEl.style.position = "relative"
+        containerEl.style.display = "inline-block"
+
         this.eventHandlers = {}
 
         this.canvas = new ShaderCanvas()
         this.canvas.setSize(400, 400)
+        this.canvas.domElement.style.display = "block"
         containerEl.appendChild(this.canvas.domElement)
+
+        bindResize(containerEl, (width, height) => {
+            this.canvas.setSize(width, height)
+            this.updateResolution()
+            this.canvas.render()
+        })
 
         this.animate = this.animate.bind(this)
         this.mousemove = this.mousemove.bind(this)
@@ -63,9 +75,7 @@ export class Shader {
             this.getEventListeners("error").forEach((callback) => { callback(error) });
         }
 
-        if (testUniform("vec2", "u_resolution", this.source)) {
-            this.canvas.setUniform("u_resolution", this.canvas.getResolution())
-        }
+        this.updateResolution()
 
         this.isAnimated = testUniform("float", "u_time", this.source)
 
@@ -92,6 +102,12 @@ export class Shader {
             // FIXME: show which texture(s) failed:
             this.getEventListeners("error").forEach((callback) => { callback("texture error") });
         })
+    }
+
+    updateResolution() {
+        if (testUniform("vec2", "u_resolution", this.source)) {
+            this.canvas.setUniform("u_resolution", this.canvas.getResolution())
+        }
     }
 
     animate(timestamp) {

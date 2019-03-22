@@ -8,7 +8,10 @@ export function init({el, path, wsURL}) {
         fontSize: "10pt",
     })
 
-    const s = new Shader(el)
+    const containerEl = document.createElement("div");
+    el.appendChild(containerEl)
+
+    const s = new Shader(containerEl)
 
     const c = new Controls(el, path)
 

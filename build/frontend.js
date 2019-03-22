@@ -262,13 +262,61 @@ var shade = (function (exports) {
         return unused;
     }
 
+    // The callback will be called when the user resizes the element, with the
+    // arguments width and height.
+    function bindResize(el, callback) {
+        el.style.position = "relative";
+
+        const handle = document.createElement("div");
+        Object.assign(handle.style, {
+            position: "absolute",
+            right: '-10px',
+            bottom: '-10px',
+            width: "20px",
+            height: "20px",
+            cursor: "se-resize",
+        });
+
+        el.appendChild(handle);
+
+        const mousemove = (e) => {
+            e.preventDefault();
+
+            const rect = el.getBoundingClientRect();
+            const width = e.clientX - rect.left;
+            const height = e.clientY - rect.top;
+
+            callback(width, height);
+        };
+
+        const mouseup = (e) => {
+            window.removeEventListener("mousemove", mousemove, false);
+            window.removeEventListener("mouseup", mouseup, false);
+        };
+
+        handle.addEventListener("mousedown", (e) => {
+            window.addEventListener("mousemove", mousemove, false);
+            window.addEventListener("mouseup", mouseup, false);
+        }, false);
+    }
+
     class Shader {
         constructor(containerEl) {
+            containerEl.style.position = "relative";
+            containerEl.style.display = "inline-block";
+
             this.eventHandlers = {};
 
             this.canvas = new ShaderCanvas();
             this.canvas.setSize(400, 400);
+            this.canvas.domElement.style.display = "block";
             containerEl.appendChild(this.canvas.domElement);
+
+            bindResize(containerEl, (width, height) => {
+                this.canvas.setSize(width, height);
+                this.updateResolution();
+                this.canvas.render();
+            });
 
             this.animate = this.animate.bind(this);
             this.mousemove = this.mousemove.bind(this);
@@ -325,9 +373,7 @@ var shade = (function (exports) {
                 this.getEventListeners("error").forEach((callback) => { callback(error); });
             }
 
-            if (testUniform("vec2", "u_resolution", this.source)) {
-                this.canvas.setUniform("u_resolution", this.canvas.getResolution());
-            }
+            this.updateResolution();
 
             this.isAnimated = testUniform("float", "u_time", this.source);
 
@@ -354,6 +400,12 @@ var shade = (function (exports) {
                 // FIXME: show which texture(s) failed:
                 this.getEventListeners("error").forEach((callback) => { callback("texture error"); });
             });
+        }
+
+        updateResolution() {
+            if (testUniform("vec2", "u_resolution", this.source)) {
+                this.canvas.setUniform("u_resolution", this.canvas.getResolution());
+            }
         }
 
         animate(timestamp) {
@@ -510,7 +562,10 @@ var shade = (function (exports) {
             fontSize: "10pt",
         });
 
-        const s = new Shader(el);
+        const containerEl = document.createElement("div");
+        el.appendChild(containerEl);
+
+        const s = new Shader(containerEl);
 
         const c = new Controls(el, path);
 
