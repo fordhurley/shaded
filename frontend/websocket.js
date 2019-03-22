@@ -1,9 +1,11 @@
+import {Listener} from "./listener"
+
 export class WebSocket {
     constructor(path, url) {
         this.path = path
         this.url = url
 
-        this.eventHandlers = {}
+        this.listener = new Listener()
 
         this.onConnect(() => {
             this.sendWatch(this.path)
@@ -22,26 +24,13 @@ export class WebSocket {
             if (msg.path !== this.path) {
                 return
             }
-            this.getEventListeners("changed").forEach((handler) => {
+            this.listener.forEachHandler("changed", (handler) => {
                 handler(msg.path)
             })
             break
         default:
             console.warn("unknown command:", msg.command)
         }
-    }
-
-    addEventListener(name, callback) {
-        this.getEventListeners(name).push(callback)
-    }
-
-    getEventListeners(name) {
-        let handlers = this.eventHandlers[name]
-        if (!handlers) {
-            handlers = []
-        }
-        this.eventHandlers[name] = handlers
-        return handlers
     }
 
     scheduleReconnect() {
@@ -56,13 +45,13 @@ export class WebSocket {
         this.ws = new window.WebSocket(this.url)
         this.ws.onopen = (event) => {
             console.log("connected:", event)
-            this.getEventListeners("connect").forEach((handler) => {
+            this.listener.forEachHandler("connect", (handler) => {
                 handler()
             })
         }
         this.ws.onclose = (event) => {
             console.log("close:", event)
-            this.getEventListeners("disconnect").forEach((handler) => {
+            this.listener.forEachHandler("disconnect", (handler) => {
                 handler()
             })
         }
@@ -84,14 +73,14 @@ export class WebSocket {
 
     // callback called with a string path arg.
     onChanged(callback) {
-        this.addEventListener("changed", callback)
+        this.listener.addEventListener("changed", callback)
     }
 
     onConnect(callback) {
-        this.addEventListener("connect", callback)
+        this.listener.addEventListener("connect", callback)
     }
 
     onDisconnect(callback) {
-        this.addEventListener("disconnect", callback)
+        this.listener.addEventListener("disconnect", callback)
     }
 }

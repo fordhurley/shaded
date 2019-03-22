@@ -300,12 +300,35 @@ var shade = (function (exports) {
         }, false);
     }
 
+    class Listener {
+        constructor() {
+            this.handlers = {};
+        }
+
+        addEventListener(name, callback) {
+            this.getEventListeners(name).push(callback);
+        }
+
+        getEventListeners(name) {
+            let handlers = this.handlers[name];
+            if (!handlers) {
+                handlers = [];
+            }
+            this.handlers[name] = handlers;
+            return handlers
+        }
+
+        forEachHandler(name, callback) {
+            this.getEventListeners(name).forEach(callback);
+        }
+    }
+
     class Shader {
         constructor(containerEl) {
             containerEl.style.position = "relative";
             containerEl.style.display = "inline-block";
 
-            this.eventHandlers = {};
+            this.listener = new Listener();
 
             this.canvas = new ShaderCanvas();
             this.canvas.setSize(400, 400);
@@ -329,21 +352,8 @@ var shade = (function (exports) {
         `);
         }
 
-        addEventListener(name, callback) {
-            this.getEventListeners(name).push(callback);
-        }
-
-        getEventListeners(name) {
-            let handlers = this.eventHandlers[name];
-            if (!handlers) {
-                handlers = [];
-            }
-            this.eventHandlers[name] = handlers;
-            return handlers
-        }
-
         onError(callback) {
-            this.addEventListener("error", callback);
+            this.listener.addEventListener("error", callback);
         }
 
         load(url) {
@@ -360,7 +370,7 @@ var shade = (function (exports) {
                 }
             }).catch((err) => {
                 console.error(err);
-                this.getEventListeners("error").forEach((callback) => { callback(err); });
+                this.listener.forEachHandler("error", (callback) => { callback(err); });
             });
         }
 
@@ -370,7 +380,7 @@ var shade = (function (exports) {
             if (errors && errors.length > 0) {
                 const msgs = errors.map((e) => e.text);
                 const error = msgs.join("\n");
-                this.getEventListeners("error").forEach((callback) => { callback(error); });
+                this.listener.forEachHandler("error", (callback) => { callback(error); });
             }
 
             this.updateResolution();
@@ -398,7 +408,9 @@ var shade = (function (exports) {
             }).catch((reason) => {
                 console.error(reason);
                 // FIXME: show which texture(s) failed:
-                this.getEventListeners("error").forEach((callback) => { callback("texture error"); });
+                this.listener.forEachHandler("error", (callback) => {
+                    callback("texture error");
+                });
             });
         }
 
@@ -463,7 +475,7 @@ var shade = (function (exports) {
             this.path = path;
             this.url = url;
 
-            this.eventHandlers = {};
+            this.listener = new Listener();
 
             this.onConnect(() => {
                 this.sendWatch(this.path);
@@ -482,26 +494,13 @@ var shade = (function (exports) {
                 if (msg.path !== this.path) {
                     return
                 }
-                this.getEventListeners("changed").forEach((handler) => {
+                this.listener.forEachHandler("changed", (handler) => {
                     handler(msg.path);
                 });
                 break
             default:
                 console.warn("unknown command:", msg.command);
             }
-        }
-
-        addEventListener(name, callback) {
-            this.getEventListeners(name).push(callback);
-        }
-
-        getEventListeners(name) {
-            let handlers = this.eventHandlers[name];
-            if (!handlers) {
-                handlers = [];
-            }
-            this.eventHandlers[name] = handlers;
-            return handlers
         }
 
         scheduleReconnect() {
@@ -516,13 +515,13 @@ var shade = (function (exports) {
             this.ws = new window.WebSocket(this.url);
             this.ws.onopen = (event) => {
                 console.log("connected:", event);
-                this.getEventListeners("connect").forEach((handler) => {
+                this.listener.forEachHandler("connect", (handler) => {
                     handler();
                 });
             };
             this.ws.onclose = (event) => {
                 console.log("close:", event);
-                this.getEventListeners("disconnect").forEach((handler) => {
+                this.listener.forEachHandler("disconnect", (handler) => {
                     handler();
                 });
             };
@@ -544,15 +543,15 @@ var shade = (function (exports) {
 
         // callback called with a string path arg.
         onChanged(callback) {
-            this.addEventListener("changed", callback);
+            this.listener.addEventListener("changed", callback);
         }
 
         onConnect(callback) {
-            this.addEventListener("connect", callback);
+            this.listener.addEventListener("connect", callback);
         }
 
         onDisconnect(callback) {
-            this.addEventListener("disconnect", callback);
+            this.listener.addEventListener("disconnect", callback);
         }
     }
 

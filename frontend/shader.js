@@ -1,13 +1,14 @@
 import {ShaderCanvas} from "shader-canvas"
 
 import {bindResize} from "./resize"
+import {Listener} from "./listener"
 
 export class Shader {
     constructor(containerEl) {
         containerEl.style.position = "relative"
         containerEl.style.display = "inline-block"
 
-        this.eventHandlers = {}
+        this.listener = new Listener()
 
         this.canvas = new ShaderCanvas()
         this.canvas.setSize(400, 400)
@@ -31,21 +32,8 @@ export class Shader {
         `)
     }
 
-    addEventListener(name, callback) {
-        this.getEventListeners(name).push(callback)
-    }
-
-    getEventListeners(name) {
-        let handlers = this.eventHandlers[name]
-        if (!handlers) {
-            handlers = []
-        }
-        this.eventHandlers[name] = handlers
-        return handlers
-    }
-
     onError(callback) {
-        this.addEventListener("error", callback)
+        this.listener.addEventListener("error", callback)
     }
 
     load(url) {
@@ -62,7 +50,7 @@ export class Shader {
             }
         }).catch((err) => {
             console.error(err)
-            this.getEventListeners("error").forEach((callback) => { callback(err) });
+            this.listener.forEachHandler("error", (callback) => { callback(err) });
         })
     }
 
@@ -72,7 +60,7 @@ export class Shader {
         if (errors && errors.length > 0) {
             const msgs = errors.map((e) => e.text)
             const error = msgs.join("\n")
-            this.getEventListeners("error").forEach((callback) => { callback(error) });
+            this.listener.forEachHandler("error", (callback) => { callback(error) });
         }
 
         this.updateResolution()
@@ -100,7 +88,9 @@ export class Shader {
         }).catch((reason) => {
             console.error(reason);
             // FIXME: show which texture(s) failed:
-            this.getEventListeners("error").forEach((callback) => { callback("texture error") });
+            this.listener.forEachHandler("error", (callback) => {
+                callback("texture error")
+            })
         })
     }
 
