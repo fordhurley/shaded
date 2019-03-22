@@ -1,8 +1,33 @@
 var shade = (function (exports) {
     'use strict';
 
+    class Listener {
+        constructor() {
+            this.handlers = {};
+        }
+
+        addEventListener(name, callback) {
+            this.getEventListeners(name).push(callback);
+        }
+
+        getEventListeners(name) {
+            let handlers = this.handlers[name];
+            if (!handlers) {
+                handlers = [];
+            }
+            this.handlers[name] = handlers;
+            return handlers
+        }
+
+        forEachHandler(name, callback) {
+            this.getEventListeners(name).forEach(callback);
+        }
+    }
+
     class Controls {
         constructor(containerEl, path) {
+            this.listener = new Listener();
+
             this.domElement = document.createElement("div");
             containerEl.appendChild(this.domElement);
 
@@ -16,8 +41,19 @@ var shade = (function (exports) {
             this.resolution = document.createElement("div");
             this.domElement.appendChild(this.resolution);
 
-            this.connStatus = document.createElement("div");
-            this.domElement.appendChild(this.connStatus);
+            const connection = document.createElement("div");
+            this.domElement.appendChild(connection);
+
+            this.connStatus = document.createElement("span");
+            connection.appendChild(this.connStatus);
+
+            this.reconnect = document.createElement("a");
+            this.reconnect.href = "#";
+            this.reconnect.textContent = "reconnect";
+            this.reconnect.style.marginLeft = "0.5em";
+            this.reconnect.onclick = this.handleReconnect.bind(this);
+            connection.appendChild(this.reconnect);
+
             this.setDisconnected();
 
             this.error = document.createElement("pre");
@@ -27,10 +63,23 @@ var shade = (function (exports) {
 
         setConnected() {
             this.connStatus.textContent = "connected";
+            this.reconnect.style.display = "none";
         }
 
         setDisconnected() {
             this.connStatus.textContent = "disconnected";
+            this.reconnect.style.display = "inline";
+        }
+
+        handleReconnect(e) {
+            e.preventDefault();
+            this.listener.forEachHandler("reconnect", (callback) => {
+                callback();
+            });
+        }
+
+        onReconnect(callback) {
+            this.listener.addEventListener("reconnect", callback);
         }
 
         setResolution([width, height]) {
@@ -314,29 +363,6 @@ var shade = (function (exports) {
         handle.addEventListener("mousedown", mousedown, false);
     }
 
-    class Listener {
-        constructor() {
-            this.handlers = {};
-        }
-
-        addEventListener(name, callback) {
-            this.getEventListeners(name).push(callback);
-        }
-
-        getEventListeners(name) {
-            let handlers = this.handlers[name];
-            if (!handlers) {
-                handlers = [];
-            }
-            this.handlers[name] = handlers;
-            return handlers
-        }
-
-        forEachHandler(name, callback) {
-            this.getEventListeners(name).forEach(callback);
-        }
-    }
-
     class Shader {
         constructor(containerEl) {
             containerEl.style.position = "relative";
@@ -534,6 +560,10 @@ var shade = (function (exports) {
         }
 
         reconnect() {
+            if (this.reconnectTimeout) {
+                window.clearTimeout(this.reconnectTimeout);
+            }
+
             this.ws = new window.WebSocket(this.url);
             this.ws.onopen = (event) => {
                 console.log("connected:", event);
@@ -597,6 +627,8 @@ var shade = (function (exports) {
             c.setError();
             s.load(p);
         });
+
+        c.onReconnect(() => { ws.reconnect(); });
 
         s.onResize((r) => { c.setResolution(r); });
         s.onError((e) => { c.setError(e); });

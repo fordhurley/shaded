@@ -42,6 +42,10 @@ export class WebSocket {
     }
 
     reconnect() {
+        if (this.reconnectTimeout) {
+            window.clearTimeout(this.reconnectTimeout)
+        }
+
         this.ws = new window.WebSocket(this.url)
         this.ws.onopen = (event) => {
             console.log("connected:", event)

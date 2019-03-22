@@ -23,6 +23,8 @@ export function init({el, path, wsURL}) {
         s.load(p)
     })
 
+    c.onReconnect(() => { ws.reconnect() })
+
     s.onResize((r) => { c.setResolution(r) })
     s.onError((e) => { c.setError(e) });
     s.load(path)
