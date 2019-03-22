@@ -13,8 +13,8 @@ var shade = (function (exports) {
             div.appendChild(navUp);
             this.domElement.appendChild(div);
 
-            this.currentSize = document.createElement("div");
-            this.domElement.appendChild(this.currentSize);
+            this.resolution = document.createElement("div");
+            this.domElement.appendChild(this.resolution);
 
             this.connStatus = document.createElement("div");
             this.domElement.appendChild(this.connStatus);
@@ -33,8 +33,8 @@ var shade = (function (exports) {
             this.connStatus.textContent = "disconnected";
         }
 
-        setSize(width, height) {
-            this.currentSize.textContent = `${width}×${height}`;
+        setResolution([width, height]) {
+            this.resolution.textContent = `${width}×${height}`;
         }
 
         setError(error) {
@@ -351,7 +351,7 @@ var shade = (function (exports) {
 
             bindResize(containerEl, (width, height) => {
                 this.canvas.setSize(width, height);
-                this.updateSize();
+                this.updateResolution();
                 this.canvas.render();
             });
 
@@ -401,7 +401,7 @@ var shade = (function (exports) {
                 this.listener.forEachHandler("error", (callback) => { callback(error); });
             }
 
-            this.updateSize();
+            this.updateResolution();
 
             this.isAnimated = testUniform("float", "u_time", this.source);
 
@@ -432,13 +432,13 @@ var shade = (function (exports) {
             });
         }
 
-        updateSize() {
-            const [w, h] = this.canvas.getResolution();
+        updateResolution() {
+            const resolution = this.canvas.getResolution();
             if (testUniform("vec2", "u_resolution", this.source)) {
-                this.canvas.setUniform("u_resolution", [w, h]);
+                this.canvas.setUniform("u_resolution", resolution);
             }
             this.listener.forEachHandler("resize", (callback) => {
-                callback(w, h);
+                callback(resolution);
             });
         }
 
@@ -598,7 +598,7 @@ var shade = (function (exports) {
             s.load(p);
         });
 
-        s.onResize((w, h) => { c.setSize(w, h); });
+        s.onResize((r) => { c.setResolution(r); });
         s.onError((e) => { c.setError(e); });
         s.load(path);
     }

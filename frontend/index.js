@@ -23,7 +23,7 @@ export function init({el, path, wsURL}) {
         s.load(p)
     })
 
-    s.onResize((w, h) => { c.setSize(w, h) })
+    s.onResize((r) => { c.setResolution(r) })
     s.onError((e) => { c.setError(e) });
     s.load(path)
 }

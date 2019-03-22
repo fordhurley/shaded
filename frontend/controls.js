@@ -10,8 +10,8 @@ export class Controls {
         div.appendChild(navUp)
         this.domElement.appendChild(div)
 
-        this.currentSize = document.createElement("div")
-        this.domElement.appendChild(this.currentSize)
+        this.resolution = document.createElement("div")
+        this.domElement.appendChild(this.resolution)
 
         this.connStatus = document.createElement("div")
         this.domElement.appendChild(this.connStatus)
@@ -30,8 +30,8 @@ export class Controls {
         this.connStatus.textContent = "disconnected"
     }
 
-    setSize(width, height) {
-        this.currentSize.textContent = `${width}×${height}`
+    setResolution([width, height]) {
+        this.resolution.textContent = `${width}×${height}`
     }
 
     setError(error) {
