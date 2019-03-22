@@ -20,7 +20,12 @@ export function bindResize(el, callback) {
 
         const rect = el.getBoundingClientRect();
         const width = e.clientX - rect.left
-        const height = e.clientY - rect.top
+        let height = e.clientY - rect.top
+
+        if (e.shiftKey) {
+            // Fix ratio while holding shift:
+            height = width * rect.height / rect.width;
+        }
 
         callback(width, height);
     }
@@ -30,8 +35,10 @@ export function bindResize(el, callback) {
         window.removeEventListener("mouseup", mouseup, false);
     }
 
-    handle.addEventListener("mousedown", (e) => {
+    const mousedown = (e) => {
         window.addEventListener("mousemove", mousemove, false);
         window.addEventListener("mouseup", mouseup, false);
-    }, false);
+    }
+
+    handle.addEventListener("mousedown", mousedown, false);
 }
