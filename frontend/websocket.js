@@ -48,22 +48,16 @@ export class WebSocket {
 
         this.ws = new window.WebSocket(this.url)
         this.ws.onopen = (event) => {
-            console.log("connected:", event)
             this.listener.forEachHandler("connect", (handler) => {
                 handler()
             })
         }
         this.ws.onclose = (event) => {
-            console.log("close:", event)
             this.listener.forEachHandler("disconnect", (handler) => {
                 handler()
             })
         }
-        this.ws.onerror = (event) => {
-            console.log("error:", event)
-        }
         this.ws.onmessage = (event) => {
-            console.log("message:", event.data)
             this.handleMessage(JSON.parse(event.data))
         }
     }
