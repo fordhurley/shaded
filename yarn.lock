@@ -1682,10 +1682,10 @@ setprototypeof@1.1.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
   integrity sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==
 
-shader-canvas@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/shader-canvas/-/shader-canvas-0.8.0.tgz#4d0abda9f0265eee532c1426f6c9efb6c6097d86"
-  integrity sha512-bXjEHHWp3HO/HPTQyU/slUBn/fTCz+NiQiARBFToPeAo7KakyPWqAqQ7LJJ2ijag95t6jJcgzKRiQr84UhdCOA==
+shader-canvas@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/shader-canvas/-/shader-canvas-0.8.1.tgz#636a7571a30e03649222f7c2b0c38cb4e91201c3"
+  integrity sha512-B9QquXTgNduhEsbRVNvpTvCqm/3CMqc6iDBKmHRB+ZU6xXBz4sXOESVg7C9UZFdG6VfFD0P+C3ECzCpOqyxmVQ==
 
 shallow-copy@0.0.1:
   version "0.0.1"

@@ -80,10 +80,10 @@ export class Shader {
 
         this.updateResolution()
 
-        this.isAnimated = testUniform("float", "u_time", this.source)
+        this.isAnimated = this.canvas.testUniform("u_time")
 
         this.canvas.domElement.removeEventListener("mousemove", this.mousemove)
-        if (testUniform("vec2", "u_mouse", this.source)) {
+        if (this.canvas.testUniform("u_mouse")) {
             this.canvas.domElement.addEventListener("mousemove", this.mousemove)
         }
 
@@ -111,7 +111,7 @@ export class Shader {
 
     updateResolution() {
         const resolution = this.canvas.getResolution()
-        if (testUniform("vec2", "u_resolution", this.source)) {
+        if (this.canvas.testUniform("u_resolution")) {
             this.canvas.setUniform("u_resolution", resolution)
         }
         this.listener.forEachHandler("resize", (callback) => {
@@ -137,11 +137,6 @@ export class Shader {
             this.render()
         }
     }
-}
-
-function testUniform(type, name, source) {
-    const re = new RegExp(`^\\s*uniform\\s+${type}\\s+${name}`, "m");
-    return re.test(source);
 }
 
 function parseTextureDirectives(source) {

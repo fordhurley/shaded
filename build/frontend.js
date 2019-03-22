@@ -233,6 +233,10 @@ var shade = (function (exports) {
                 throw new Error("failed to link program");
             }
         }
+        testUniform(name) {
+            const location = this.gl.getUniformLocation(this.shaderProgram, name);
+            return location !== null;
+        }
         setUniform(name, value) {
             // TODO: validate name?
             // TODO OPTIMIZE: cache uniform location
@@ -494,10 +498,10 @@ var shade = (function (exports) {
 
             this.updateResolution();
 
-            this.isAnimated = testUniform("float", "u_time", this.source);
+            this.isAnimated = this.canvas.testUniform("u_time");
 
             this.canvas.domElement.removeEventListener("mousemove", this.mousemove);
-            if (testUniform("vec2", "u_mouse", this.source)) {
+            if (this.canvas.testUniform("u_mouse")) {
                 this.canvas.domElement.addEventListener("mousemove", this.mousemove);
             }
 
@@ -525,7 +529,7 @@ var shade = (function (exports) {
 
         updateResolution() {
             const resolution = this.canvas.getResolution();
-            if (testUniform("vec2", "u_resolution", this.source)) {
+            if (this.canvas.testUniform("u_resolution")) {
                 this.canvas.setUniform("u_resolution", resolution);
             }
             this.listener.forEachHandler("resize", (callback) => {
@@ -551,11 +555,6 @@ var shade = (function (exports) {
                 this.render();
             }
         }
-    }
-
-    function testUniform(type, name, source) {
-        const re = new RegExp(`^\\s*uniform\\s+${type}\\s+${name}`, "m");
-        return re.test(source);
     }
 
     function parseTextureDirectives(source) {
