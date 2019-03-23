@@ -34,9 +34,9 @@ export class Controls {
 
         this.setDisconnected()
 
-        this.error = document.createElement("pre")
-        this.error.style.color = "red"
-        this.domElement.appendChild(this.error)
+        this.errors = document.createElement("div")
+        this.errors.style.color = "red"
+        this.domElement.appendChild(this.errors)
 
         this.animate = this.animate.bind(this)
         window.requestAnimationFrame(this.animate)
@@ -86,8 +86,16 @@ export class Controls {
         this.listener.addEventListener("reconnect", callback)
     }
 
-    setError(error) {
-        this.error.textContent = error ? error : ""
+    clearErrors() {
+        while (this.errors.hasChildNodes()) {
+            this.errors.removeChild(this.errors.lastChild)
+        }
+    }
+
+    addError(error) {
+        const errorEl = document.createElement("div")
+        errorEl.textContent = error
+        this.errors.appendChild(errorEl)
     }
 }
 

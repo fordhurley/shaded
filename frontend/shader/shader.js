@@ -73,9 +73,12 @@ export class Shader {
         this.source = source
         const errors = this.canvas.setShader(this.source)
         if (errors && errors.length > 0) {
-            const msgs = errors.map((e) => e.text)
-            const error = msgs.join("\n")
-            this.listener.forEachHandler("error", (callback) => { callback(error) });
+            errors.forEach((error) => {
+                this.listener.forEachHandler("error", (callback) => {
+                    callback(error.text) ;
+                });
+            })
+            return;
         }
 
         this.updateResolution()
@@ -93,6 +96,12 @@ export class Shader {
         Promise.all(textureDirectives.map(({filePath, name}) => {
             return loadImage(filePath).then((img) => {
                 this.canvas.setTexture(name, img)
+            }).catch((reason) => {
+                console.error("texture error:", reason)
+                const error = `error loading texture: ${filePath}`
+                this.listener.forEachHandler("error", (callback) => {
+                    callback(error)
+                })
             })
         })).then(() => {
             if (this.isAnimated) {
@@ -102,10 +111,6 @@ export class Shader {
             }
         }).catch((reason) => {
             console.error(reason);
-            // FIXME: show which texture(s) failed:
-            this.listener.forEachHandler("error", (callback) => {
-                callback("texture error")
-            })
         })
     }
 

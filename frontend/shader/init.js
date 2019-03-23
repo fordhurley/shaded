@@ -14,7 +14,7 @@ export function init({el, path, wsURL}) {
     ws.onConnect(c.setConnected.bind(c))
     ws.onDisconnect(c.setDisconnected.bind(c))
     ws.onChanged((p) => {
-        c.setError()
+        c.clearErrors()
         s.load(p)
     })
 
@@ -22,6 +22,6 @@ export function init({el, path, wsURL}) {
 
     s.onRender(c.reportFrame.bind(c))
     s.onResize(c.setResolution.bind(c))
-    s.onError(c.setError.bind(c))
+    s.onError(c.addError.bind(c))
     s.load(path)
 }
