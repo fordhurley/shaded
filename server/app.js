@@ -3,7 +3,6 @@ const path = require("path")
 
 const express = require("express")
 const glslify = require("glslify")
-const serveIndex = require("serve-index")
 
 function serveShader(filePath, res) {
     fs.readFile(filePath, (error, data) => {
@@ -31,18 +30,80 @@ function serveShader(filePath, res) {
     })
 }
 
+function serveListing(reqPath, res) {
+    const rootPath = path.normalize(path.resolve(".") + path.sep);
+
+    // Normalization and sanitation based on
+    // https://github.com/expressjs/serve-index/blob/fcad6767/index.js#L116-L129
+    let dirPath = path.normalize(path.join(rootPath, reqPath));
+
+    // null byte(s), bad request
+    if (~dirPath.indexOf('\0')) {
+        res.code(400);
+        res.json({error: "bad path"})
+        return;
+    }
+
+    // malicious path
+    if ((dirPath + path.sep).substr(0, rootPath.length) !== rootPath) {
+        res.code(403);
+        res.json({error: "illegal path"})
+        return;
+    }
+
+    // determine ".." display
+    var showUp = path.normalize(path.resolve(dirPath) + path.sep) !== rootPath;
+
+    fs.readdir(dirPath, (error, files) => {
+        if (error) {
+            console.error("error reading direcotry:", error)
+            if (error.code === "ENOENT") {
+                res.status(404)
+                res.json({error: "not found"})
+                return
+            }
+            res.status(500)
+            res.json({error})
+            return
+        }
+
+        const entries = files.map((file) => {
+            return {
+                url: path.join(reqPath, file),
+                name: file,
+            }
+        })
+
+        if (showUp) {
+            entries.unshift({
+                url: path.join(reqPath, ".."),
+                name: "..",
+            })
+        }
+
+        res.json({entries})
+    })
+}
+
 module.exports = function() {
     const app = express()
 
     const shaderJS = path.resolve(__dirname, "..", "build", "shader.js")
     const shaderHTML = path.resolve(__dirname, "..", "html", "shader.html")
 
+    const listingJS = path.resolve(__dirname, "..", "build", "listing.js")
+    const listingHTML = path.resolve(__dirname, "..", "html", "listing.html")
+
     app.get("/shader.js", (req, res) => {
         res.sendFile(shaderJS)
     })
 
+    app.get("/listing.js", (req, res) => {
+        res.sendFile(listingJS)
+    })
+
     app.get(/^\/(.+\.glsl)/, (req, res) => {
-        if (req.headers.accept === "application/x-shader") {
+        if (req.headers.accept === "application/json") {
             const filePath = req.params[0] // first regex group
             serveShader(filePath, res)
             return
@@ -53,9 +114,18 @@ module.exports = function() {
     })
 
     // Everything that starts and ends with / shows directory listings:
-    app.get(/^\/.*\/?$/, serveIndex(".", {view: "details"}))
+    app.get(/^\/(?:.+\/)*$/, (req, res) => {
+        if (req.headers.accept === "application/json") {
+            serveListing(req.path, res)
+            return
+        }
 
-    // Catch all for everything else:
+        // Otherwise, serve the listing page to the browser:
+        res.sendFile(listingHTML)
+    })
+
+    // Catch all for everything else serves a file directly (e.g. a texture
+    // image), relative to the working directory.
     app.use(express.static(path.resolve(".")))
 
     return app
