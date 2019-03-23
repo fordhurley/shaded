@@ -31,22 +31,22 @@ function serveShader(filePath, res) {
 }
 
 function serveListing(reqPath, res) {
-    const rootPath = path.normalize(path.resolve(".") + path.sep);
-
     // Normalization and sanitation based on
     // https://github.com/expressjs/serve-index/blob/fcad6767/index.js#L116-L129
-    let dirPath = path.normalize(path.join(rootPath, reqPath));
+
+    const rootPath = path.normalize(path.resolve(".") + path.sep);
+    const dirPath = path.normalize(path.join(rootPath, reqPath));
 
     // null byte(s), bad request
     if (~dirPath.indexOf('\0')) {
-        res.code(400);
+        res.status(400);
         res.json({error: "bad path"})
         return;
     }
 
     // malicious path
     if ((dirPath + path.sep).substr(0, rootPath.length) !== rootPath) {
-        res.code(403);
+        res.status(403);
         res.json({error: "illegal path"})
         return;
     }

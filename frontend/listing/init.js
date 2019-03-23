@@ -2,6 +2,11 @@ export function init({el, path}) {
     const containerEl = document.createElement("div");
     el.appendChild(containerEl)
 
+    const loading = document.createElement("div");
+    loading.style.color = "dimgray";
+    loading.textContent = "loading...";
+    containerEl.appendChild(loading);
+
     load(path).then((data) => {
         data.entries.forEach((entry) => {
             const entryEl = document.createElement("div");
@@ -14,6 +19,8 @@ export function init({el, path}) {
         errorEl.textContent = error.toString()
         errorEl.style.color = "red";
         containerEl.appendChild(errorEl)
+    }).finally(() => {
+        containerEl.removeChild(loading)
     })
 }
 
@@ -21,6 +28,11 @@ function load(path) {
     const req = new Request(path)
     req.headers.set("accept", "application/json")
     return fetch(req).then((res) => {
+        if (res.status !== 200) {
+            return res.json().then((json) => {
+                throw new Error(json.error);
+            });
+        }
         return res.json()
     })
 }
