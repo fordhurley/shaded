@@ -1,4 +1,4 @@
-import {Listener} from "./listener"
+import {Listener} from "../listener"
 
 export class WebSocket {
     constructor(path, url) {

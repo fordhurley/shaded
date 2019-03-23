@@ -6,8 +6,8 @@
   "author": "Ford Hurley <ford.hurley@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "preinstall": "rollup -c rollup.config.js",
-    "watch": "rollup -c rollup.config.js --watch"
+    "preinstall": "rollup -c frontend/rollup.config.js",
+    "watch": "rollup -c frontend/rollup.config.js --watch"
   },
   "dependencies": {
     "chokidar": "^2.1.2",

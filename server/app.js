@@ -34,11 +34,11 @@ function serveShader(filePath, res) {
 module.exports = function() {
     const app = express()
 
-    const frontendJS = path.resolve(__dirname, "..", "build", "frontend.js")
+    const shaderJS = path.resolve(__dirname, "..", "build", "shader.js")
     const shaderHTML = path.resolve(__dirname, "..", "html", "shader.html")
 
-    app.get("/frontend.js", (req, res) => {
-        res.sendFile(frontendJS)
+    app.get("/shader.js", (req, res) => {
+        res.sendFile(shaderJS)
     })
 
     app.get(/^\/(.+\.glsl)/, (req, res) => {

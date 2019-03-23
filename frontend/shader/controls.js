@@ -1,5 +1,5 @@
-import {breadcrumbs} from "./breadcrumbs"
-import {Listener} from "./listener"
+import {breadcrumbs} from "../breadcrumbs"
+import {Listener} from "../listener"
 
 export class Controls {
     constructor(containerEl, path) {

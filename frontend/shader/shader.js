@@ -1,7 +1,7 @@
 import {ShaderCanvas} from "shader-canvas"
 
 import {bindResize} from "./resize"
-import {Listener} from "./listener"
+import {Listener} from "../listener"
 
 export class Shader {
     constructor(containerEl) {
