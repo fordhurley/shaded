@@ -24,4 +24,8 @@ export function init({el, path, wsURL}) {
     s.onResize(c.setResolution.bind(c))
     s.onError(c.addError.bind(c))
     s.load(path)
+
+    const title = document.querySelector("title") || document.createElement("title")
+    title.textContent = `shade: ${path}`
+    document.head.appendChild(title)
 }

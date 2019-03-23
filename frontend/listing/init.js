@@ -22,6 +22,10 @@ export function init({el, path}) {
     }).finally(() => {
         containerEl.removeChild(loading)
     })
+
+    const title = document.querySelector("title") || document.createElement("title")
+    title.textContent = `shade: ${path}`
+    document.head.appendChild(title)
 }
 
 function load(path) {
