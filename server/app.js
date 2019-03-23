@@ -114,7 +114,7 @@ module.exports = function() {
     })
 
     app.get(/^\/(.+\.glsl)/, (req, res) => {
-        if (req.headers.accept === "application/json") {
+        if (req.query.shader) {
             const filePath = req.params[0] // first regex group
             serveShader(filePath, res)
             return
@@ -126,7 +126,7 @@ module.exports = function() {
 
     // Everything that starts and ends with / shows directory listings:
     app.get(/^\/(?:.+\/)*$/, (req, res) => {
-        if (req.headers.accept === "application/json") {
+        if (req.query.listing) {
             serveListing(req.path, res)
             return
         }

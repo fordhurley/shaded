@@ -25,7 +25,7 @@ export function init({el, path}) {
 }
 
 function load(path) {
-    const req = new Request(path)
+    const req = new Request(path + "?listing=true")
     req.headers.set("accept", "application/json")
     return fetch(req).then((res) => {
         if (res.status !== 200) {

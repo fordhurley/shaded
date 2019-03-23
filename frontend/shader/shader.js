@@ -53,7 +53,7 @@ export class Shader {
 
     load(url) {
         console.log("load:", url)
-        const req = new Request(url)
+        const req = new Request(url + "?shader=true")
         req.headers.set("accept", "application/json")
         fetch(req).then((res) => {
             return res.json()
