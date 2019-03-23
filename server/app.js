@@ -54,9 +54,9 @@ function serveListing(reqPath, res) {
     // determine ".." display
     var showUp = path.normalize(path.resolve(dirPath) + path.sep) !== rootPath;
 
-    fs.readdir(dirPath, (error, files) => {
+    fs.readdir(dirPath, {withFileTypes: true}, (error, dirents) => {
         if (error) {
-            console.error("error reading direcotry:", error)
+            console.error("error reading directory:", error)
             if (error.code === "ENOENT") {
                 res.status(404)
                 res.json({error: "not found"})
@@ -67,19 +67,30 @@ function serveListing(reqPath, res) {
             return
         }
 
-        const entries = files.map((file) => {
-            return {
-                url: path.join(".", file),
-                name: file,
-            }
-        })
+        const dirs = dirents.filter((dirent) => dirent.isDirectory())
+        const files = dirents.filter((dirent) => dirent.isFile())
 
+        const entries = []
         if (showUp) {
-            entries.unshift({
+            entries.push({
                 url: "..",
                 name: "..",
             })
         }
+
+        dirs.forEach((dir) => {
+            entries.push({
+                url: path.join(".", dir.name) + path.sep,
+                name: dir.name + path.sep,
+            })
+        })
+
+        files.forEach((file) => {
+            entries.push({
+                url: path.join(".", file.name),
+                name: file.name,
+            })
+        })
 
         res.json({entries})
     })

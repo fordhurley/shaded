@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "glsl fragment shader viewer",
   "bin": "./server/index.js",
+  "engines": {
+    "node": ">=10.10.0"
+  },
   "author": "Ford Hurley <ford.hurley@gmail.com>",
   "license": "MIT",
   "scripts": {
