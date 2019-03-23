@@ -69,14 +69,14 @@ function serveListing(reqPath, res) {
 
         const entries = files.map((file) => {
             return {
-                url: path.join(reqPath, file),
+                url: path.join(".", file),
                 name: file,
             }
         })
 
         if (showUp) {
             entries.unshift({
-                url: path.join(reqPath, ".."),
+                url: "..",
                 name: "..",
             })
         }
