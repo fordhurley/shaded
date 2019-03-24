@@ -1,7 +1,11 @@
 {
   "name": "shaded",
   "description": "glsl fragment shader viewer and browser",
-  "author": "Ford Hurley <ford.hurley@gmail.com>",
+  "author": {
+    "name": "Ford Hurley",
+    "email": "ford.hurley@gmail.com",
+    "url": "https://fordhurley.com/"
+  },
   "repository": "github:fordhurley/shaded",
   "license": "MIT",
   "engines": {
