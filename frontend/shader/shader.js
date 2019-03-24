@@ -51,24 +51,6 @@ export class Shader {
         })
     }
 
-    load(url) {
-        console.log("load:", url)
-        const req = new Request(url + "?shader=true")
-        req.headers.set("accept", "application/json")
-        fetch(req).then((res) => {
-            return res.json()
-        }).then((data) => {
-            if (data.compiledSource) {
-                this.setShader(data.compiledSource)
-            } else {
-                this.setShader(data.source)
-            }
-        }).catch((err) => {
-            console.error(err)
-            this.listener.forEachHandler("error", (callback) => { callback(err) });
-        })
-    }
-
     setShader(source) {
         this.source = source
         const errors = this.canvas.setShader(this.source)

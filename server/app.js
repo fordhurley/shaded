@@ -24,7 +24,15 @@ function serveShader(filePath, res) {
         // resolve relative to the file, and absolute imports resolve
         // with the usual rules:
         const basedir = path.dirname(path.resolve(filePath))
-        const compiledSource = glslify.compile(source, {basedir})
+        let compiledSource;
+        try {
+            compiledSource = glslify.compile(source, {basedir})
+        } catch(e) {
+            console.error("glslify:", e.message)
+            res.status(500)
+            res.json({error: `glslify: ${e.message}`})
+            return
+        }
 
         res.json({source, compiledSource})
     })
