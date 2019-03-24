@@ -49,13 +49,16 @@ NOTE:
 If you're coming from atom-glsl-preview, the behavior of `u_mouse` has changed:
 instead of providing normalized mouse coordinates (0 to 1), `u_mouse` will match
 the coordinates of `gl_FragCoord` (divide by `u_resolution` to get back to
-normalized coordinates).
+normalized coordinates). This makes the behavior match that of The Book of
+Shaders editor.
 
 As in recent versions of atom-glsl-preview, no `precision` specifiers or
 uniform declarations will be added to your shader automatically—what you code is
 what you get.
 
 #### Install
+
+[![npm](https://img.shields.io/npm/v/shaded.svg?color=%23FB3E44&style=flat-square)](https://www.npmjs.com/package/shaded)
 
     npm install --global shaded
 
