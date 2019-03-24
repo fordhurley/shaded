@@ -17,14 +17,14 @@ function serve(port, openBrowser) {
 
     server.listen(port, () => {
         const uri = `http://localhost:${port}`
-        console.log(`shade listening at ${uri}`)
+        console.log(`shaded listening at ${uri}`)
         if (openBrowser) {
             open(uri)
         }
     })
 }
 
-const usage = `usage of shade:
+const usage = `usage of shaded:
   --help, -h
      show this help
   --port <port>, -p <port>

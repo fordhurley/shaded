@@ -1,4 +1,4 @@
-`shade` is a development tool for writing and previewing glsl fragment shaders,
+`shaded` is a development tool for writing and previewing glsl fragment shaders,
 in the spirit of:
 
 - [The Book of Shaders editor](http://editor.thebookofshaders.com)
@@ -57,19 +57,19 @@ what you get.
 
 #### Install
 
-    npm install --global shade
+    npm install --global shaded
 
 Or, with `yarn`:
 
-    yarn global add shade
+    yarn global add shaded
 
 
 #### Usage
 
 Start the server in the current directory:
 
-    $ shade
-    shade listening at http://localhost:3000
+    $ shaded
+    shaded listening at http://localhost:3000
 
 Open http://localhost:3000 in your browser to see a listing of the files in the
 current directory. Navigating to a file ending with the extension `.glsl` will

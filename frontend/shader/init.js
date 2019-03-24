@@ -26,6 +26,6 @@ export function init({el, path, wsURL}) {
     s.load(path)
 
     const title = document.querySelector("title") || document.createElement("title")
-    title.textContent = `shade: ${path}`
+    title.textContent = `shaded: ${path}`
     document.head.appendChild(title)
 }
