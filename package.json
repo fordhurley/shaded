@@ -1,13 +1,14 @@
 {
   "name": "shaded",
-  "version": "1.0.0",
   "description": "glsl fragment shader viewer and browser",
-  "bin": "./server/index.js",
+  "author": "Ford Hurley <ford.hurley@gmail.com>",
+  "repository": "github:fordhurley/shaded",
+  "license": "MIT",
   "engines": {
     "node": ">=10.10.0"
   },
-  "author": "Ford Hurley <ford.hurley@gmail.com>",
-  "license": "MIT",
+  "version": "1.0.0",
+  "bin": "./server/index.js",
   "scripts": {
     "preinstall": "rollup -c frontend/rollup.config.js",
     "watch": "rollup -c frontend/rollup.config.js --watch"
