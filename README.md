@@ -90,11 +90,12 @@ open a page showing the shader in a WebGL canvas.
 - More testing (especially cross platform/browser).
 - Show/copy original source and "compiled" (glslified) source.
 - Show line errors when viewing source.
+- Custom file extensions.
+- Open browser to a specific file/directory if named as an argument.
+- Browse "gallery" with previews.
+- Play/pause controls.
+- Export frames/video.
 - Custom uniform sliders.
 - Custom programmable uniforms (e.g. mouse clicks, keyboard, date).
-- Export frames/video.
-- Open browser to a specific file if named as an argument.
 - Video textures.
-- Custom file extensions.
 - Multiple buffers.
-- Browse "gallery" with previews.
