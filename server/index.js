@@ -11,9 +11,17 @@ const wss = require("./wss")
 function serve(port, openBrowser) {
     const server = http.createServer()
 
-    wss(server)
-
     server.on("request", app())
+
+    server.on("error", (err) => {
+        console.error("http:", err.message)
+        process.exit(2)
+    })
+
+    // For some reason, the websocket server must be bound to the server *after*
+    // adding the "error" handler, or else errors like EADDRINUSE will result
+    // in an uncaught exception, as if the handler was never bound at all.
+    wss(server)
 
     server.listen(port, () => {
         const uri = `http://localhost:${port}`
