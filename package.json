@@ -15,7 +15,8 @@
   "bin": "./server/index.js",
   "scripts": {
     "preinstall": "rollup -c frontend/rollup.config.js",
-    "watch": "rollup -c frontend/rollup.config.js --watch"
+    "watch": "rollup -c frontend/rollup.config.js --watch",
+    "prettier": "prettier --check ./server/*.js ./frontend/**/*.js"
   },
   "dependencies": {
     "chokidar": "^2.1.2",
@@ -27,5 +28,8 @@
     "rollup-plugin-node-resolve": "^4.0.1",
     "shader-canvas": "^0.8.1",
     "ws": "^6.2.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.16.4"
   }
 }

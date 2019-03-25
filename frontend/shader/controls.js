@@ -1,104 +1,104 @@
-import {breadcrumbs} from "../breadcrumbs"
-import {Listener} from "../listener"
+import { breadcrumbs } from "../breadcrumbs";
+import { Listener } from "../listener";
 
 export class Controls {
-    constructor(containerEl, path) {
-        this.listener = new Listener()
+  constructor(containerEl, path) {
+    this.listener = new Listener();
 
-        this.domElement = document.createElement("div")
-        containerEl.appendChild(this.domElement)
+    this.domElement = document.createElement("div");
+    containerEl.appendChild(this.domElement);
 
-        this.domElement.appendChild(breadcrumbs(path))
+    this.domElement.appendChild(breadcrumbs(path));
 
-        this.resolution = document.createElement("div")
-        this.domElement.appendChild(this.resolution)
+    this.resolution = document.createElement("div");
+    this.domElement.appendChild(this.resolution);
 
-        this.framerate = document.createElement("div")
-        this.domElement.appendChild(this.framerate)
-        this.setFramerate(0)
-        this.frames = 0
-        this.lastTimestamp = performance.now()
+    this.framerate = document.createElement("div");
+    this.domElement.appendChild(this.framerate);
+    this.setFramerate(0);
+    this.frames = 0;
+    this.lastTimestamp = performance.now();
 
-        const connection = document.createElement("div")
-        this.domElement.appendChild(connection)
+    const connection = document.createElement("div");
+    this.domElement.appendChild(connection);
 
-        this.connStatus = document.createElement("span")
-        connection.appendChild(this.connStatus)
+    this.connStatus = document.createElement("span");
+    connection.appendChild(this.connStatus);
 
-        this.reconnect = document.createElement("a")
-        this.reconnect.href = "#"
-        this.reconnect.textContent = "reconnect"
-        this.reconnect.style.marginLeft = "0.5em"
-        this.reconnect.onclick = this.handleReconnect.bind(this)
-        connection.appendChild(this.reconnect)
+    this.reconnect = document.createElement("a");
+    this.reconnect.href = "#";
+    this.reconnect.textContent = "reconnect";
+    this.reconnect.style.marginLeft = "0.5em";
+    this.reconnect.onclick = this.handleReconnect.bind(this);
+    connection.appendChild(this.reconnect);
 
-        this.setDisconnected()
+    this.setDisconnected();
 
-        this.errors = document.createElement("div")
-        this.errors.style.color = "red"
-        this.domElement.appendChild(this.errors)
+    this.errors = document.createElement("div");
+    this.errors.style.color = "red";
+    this.domElement.appendChild(this.errors);
 
-        this.animate = this.animate.bind(this)
-        window.requestAnimationFrame(this.animate)
+    this.animate = this.animate.bind(this);
+    window.requestAnimationFrame(this.animate);
+  }
+
+  reportFrame() {
+    this.frames++;
+  }
+
+  setResolution([width, height]) {
+    this.resolution.textContent = `${width}×${height}`;
+  }
+
+  animate(timestamp) {
+    window.requestAnimationFrame(this.animate);
+    if (timestamp - this.lastTimestamp < 500) {
+      return;
     }
+    const deltaSeconds = (timestamp - this.lastTimestamp) / 1000;
+    this.setFramerate(this.frames / deltaSeconds);
+    this.frames = 0;
+    this.lastTimestamp = timestamp;
+  }
 
-    reportFrame() {
-        this.frames++
-    }
+  setFramerate(fps) {
+    this.framerate.textContent = `${fps.toFixed(2)} fps`;
+  }
 
-    setResolution([width, height]) {
-        this.resolution.textContent = `${width}×${height}`
-    }
+  setConnected() {
+    this.connStatus.textContent = "connected";
+    this.reconnect.style.display = "none";
+  }
 
-    animate(timestamp) {
-        window.requestAnimationFrame(this.animate)
-        if (timestamp - this.lastTimestamp < 500) {
-            return
-        }
-        const deltaSeconds = (timestamp - this.lastTimestamp) / 1000
-        this.setFramerate(this.frames / deltaSeconds)
-        this.frames = 0
-        this.lastTimestamp = timestamp
-    }
+  setDisconnected() {
+    this.connStatus.textContent = "disconnected";
+    this.reconnect.style.display = "inline";
+  }
 
-    setFramerate(fps) {
-        this.framerate.textContent = `${fps.toFixed(2)} fps`
-    }
+  handleReconnect(e) {
+    e.preventDefault();
+    this.listener.forEachHandler("reconnect", callback => {
+      callback();
+    });
+  }
 
-    setConnected() {
-        this.connStatus.textContent = "connected"
-        this.reconnect.style.display = "none"
-    }
+  onReconnect(callback) {
+    this.listener.addEventListener("reconnect", callback);
+  }
 
-    setDisconnected() {
-        this.connStatus.textContent = "disconnected"
-        this.reconnect.style.display = "inline"
+  clearErrors() {
+    while (this.errors.hasChildNodes()) {
+      this.errors.removeChild(this.errors.lastChild);
     }
+  }
 
-    handleReconnect(e) {
-        e.preventDefault()
-        this.listener.forEachHandler("reconnect", (callback) => {
-            callback()
-        })
-    }
-
-    onReconnect(callback) {
-        this.listener.addEventListener("reconnect", callback)
-    }
-
-    clearErrors() {
-        while (this.errors.hasChildNodes()) {
-            this.errors.removeChild(this.errors.lastChild)
-        }
-    }
-
-    addError(error) {
-        const errorEl = document.createElement("div")
-        errorEl.textContent = error
-        this.errors.appendChild(errorEl)
-    }
+  addError(error) {
+    const errorEl = document.createElement("div");
+    errorEl.textContent = error;
+    this.errors.appendChild(errorEl);
+  }
 }
 
 function dirname(path) {
-    return path.match(/.*\//);
+  return path.match(/.*\//);
 }
