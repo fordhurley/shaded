@@ -14,7 +14,7 @@
   "version": "1.0.0",
   "bin": "./server/index.js",
   "scripts": {
-    "preinstall": "rollup -c frontend/rollup.config.js",
+    "postinstall": "rollup -c frontend/rollup.config.js",
     "watch": "rollup -c frontend/rollup.config.js --watch",
     "test": "prettier --check ./server/*.js ./frontend/**/*.js"
   },
