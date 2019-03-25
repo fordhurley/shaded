@@ -17,8 +17,8 @@
     "postinstall": "yarn run rollup-build",
     "rollup-build": "rollup -c frontend/rollup.config.js",
     "rollup-watch": "rollup -c frontend/rollup.config.js --watch",
-    "prettier-check": "prettier ./server/*.js ./frontend/**/*.js --check",
-    "prettier-fix": "prettier ./server/*.js ./frontend/**/*.js --write"
+    "prettier-check": "prettier ./server/*.js ./frontend/*.js ./frontend/*/*.js --check",
+    "prettier-fix": "prettier ./server/*.js  ./frontend/*.js ./frontend/*/*.js --write"
   },
   "dependencies": {
     "chokidar": "^2.1.2",
