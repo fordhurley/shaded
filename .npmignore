@@ -1,1 +1,4 @@
-/examples
+examples
+build
+screenshot.png
+.circleci
