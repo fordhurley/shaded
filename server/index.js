@@ -18,9 +18,12 @@ function serve(port, openBrowser) {
         process.exit(2)
     })
 
-    // For some reason, the websocket server must be bound to the server *after*
-    // adding the "error" handler, or else errors like EADDRINUSE will result
-    // in an uncaught exception, as if the handler was never bound at all.
+    // If the websocket server is bound to the http server before the "error"
+    // handler is bound, the http server's "error" events will be forwarded to
+    // the websocket server *first*, causing the uncaught exception handling in
+    // node's "events" package. Binding this *after* allows OUR "error" handler
+    // to log and exit first, without the annoying stack trace. This is
+    // particularly important for EADDRINUSE on start up.
     wss(server)
 
     server.listen(port, () => {
