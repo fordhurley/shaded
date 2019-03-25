@@ -16,7 +16,7 @@
   "scripts": {
     "preinstall": "rollup -c frontend/rollup.config.js",
     "watch": "rollup -c frontend/rollup.config.js --watch",
-    "prettier": "prettier --check ./server/*.js ./frontend/**/*.js"
+    "test": "prettier --check ./server/*.js ./frontend/**/*.js"
   },
   "dependencies": {
     "chokidar": "^2.1.2",
