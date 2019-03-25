@@ -14,9 +14,11 @@
   "version": "1.0.0",
   "bin": "./server/index.js",
   "scripts": {
-    "postinstall": "rollup -c frontend/rollup.config.js",
-    "watch": "rollup -c frontend/rollup.config.js --watch",
-    "test": "prettier --check ./server/*.js ./frontend/**/*.js"
+    "postinstall": "rollup-build",
+    "rollup-build": "rollup -c frontend/rollup.config.js",
+    "rollup-watch": "rollup -c frontend/rollup.config.js --watch",
+    "prettier-check": "prettier ./server/*.js ./frontend/**/*.js --check",
+    "prettier-fix": "prettier ./server/*.js ./frontend/**/*.js --write"
   },
   "dependencies": {
     "chokidar": "^2.1.2",
