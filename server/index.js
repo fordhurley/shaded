@@ -27,30 +27,33 @@ function serve(port, openBrowser) {
   wss(server);
 
   server.listen(port, () => {
-    const uri = `http://localhost:${port}`;
+    let uri = `http://localhost:${port}/`;
     console.log(`shaded listening at ${uri}`);
     if (openBrowser) {
-      open(uri);
+      if (typeof openBrowser === "string") {
+        open(uri + openBrowser);
+      } else {
+        open(uri);
+      }
     }
   });
 }
 
-const usage = `usage of shaded:
-  --help, -h
-     show this help
-  --port <port>, -p <port>
-     listen on port (default 3000)
-  --open, -o
-     open the browser when the server starts (default false)
+const usage = `Usage for shaded:
+
+  -p, --port <port>    listen on <port> (default 3000)
+  -o, --open [path]    open the browser when the server starts, to an
+                       optional path (default false)
+  -h, --help           show this help
 `;
 
 function main(opts) {
-  if (opts.help || opts.h) {
+  if (opts.help) {
     console.error(usage);
     return;
   }
 
-  const port = opts.port || opts.p || 3000;
+  const port = opts.port || 3000;
 
   if (typeof port !== "number") {
     console.error("ERROR: invalid port option:", port);
@@ -58,9 +61,17 @@ function main(opts) {
     process.exit(1);
   }
 
-  const openBrowser = opts.open || opts.o;
+  const openBrowser = opts.open;
 
   serve(port, openBrowser);
 }
 
-main(parseArgs(process.argv));
+main(
+  parseArgs(process.argv.slice(2), {
+    alias: {
+      h: "help",
+      p: "port",
+      o: "open"
+    }
+  })
+);
