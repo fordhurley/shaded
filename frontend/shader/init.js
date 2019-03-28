@@ -3,10 +3,7 @@ import { Shader } from "./shader";
 import { WebSocket } from "./websocket";
 
 export function init({ el, path, wsURL }) {
-  const containerEl = document.createElement("div");
-  el.appendChild(containerEl);
-
-  const s = new Shader(containerEl);
+  const s = new Shader(el);
 
   const c = new Controls(el, path);
 
