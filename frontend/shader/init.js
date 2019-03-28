@@ -24,7 +24,7 @@ export function init({ el, path, wsURL }) {
       });
   };
 
-  const ws = new WebSocket(path, wsURL);
+  const ws = new WebSocket(path);
   ws.onConnect(controls.setConnected.bind(controls));
   ws.onDisconnect(controls.setDisconnected.bind(controls));
   ws.onChanged(p => {

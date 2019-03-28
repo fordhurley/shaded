@@ -16,16 +16,9 @@
     <div class="shaded"></div>
     <script src="/shader.js"></script>
     <script>
-      let wsURL = "ws:";
-      if (window.location.protocol === "https:") {
-        wsURL = "wss:";
-      }
-      wsURL += "//" + window.location.host;
-
       shader.init({
         el: document.querySelector(".shaded"),
         path: window.location.pathname,
-        wsURL
       });
     </script>
   </body>
