@@ -2,12 +2,14 @@ import { Controls } from "./controls";
 import { Shader } from "./shader";
 import { WebSocket } from "./websocket";
 
-export function init({ el, path, wsURL }) {
+export function init({ path }) {
+  const domElement = document.createElement("div");
+
   const shader = new Shader();
-  el.appendChild(shader.domElement);
+  domElement.appendChild(shader.domElement);
 
   const controls = new Controls(path);
-  el.appendChild(controls.domElement);
+  domElement.appendChild(controls.domElement);
 
   const reload = () => {
     load(path)
@@ -44,7 +46,7 @@ export function init({ el, path, wsURL }) {
   title.textContent = `shaded: ${path}`;
   document.head.appendChild(title);
 
-  return { shader, controls };
+  return { shader, controls, domElement };
 }
 
 function load(path) {
