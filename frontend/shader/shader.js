@@ -4,20 +4,19 @@ import { bindResize } from "./resize";
 import { Listener } from "../listener";
 
 export class Shader {
-  constructor(el) {
-    const wrapper = document.createElement("div");
-    wrapper.style.position = "relative";
-    wrapper.style.display = "inline-block";
-    el.appendChild(wrapper);
+  constructor() {
+    this.domElement = document.createElement("div");
+    this.domElement.style.position = "relative";
+    this.domElement.style.display = "inline-block";
 
     this.listener = new Listener();
 
     this.canvas = new ShaderCanvas();
     this.canvas.setSize(400, 400);
     this.canvas.domElement.style.display = "block";
-    wrapper.appendChild(this.canvas.domElement);
+    this.domElement.appendChild(this.canvas.domElement);
 
-    bindResize(wrapper, (width, height) => {
+    bindResize(this.domElement, (width, height) => {
       this.canvas.setSize(width, height);
       this.updateResolution();
       this.render();
