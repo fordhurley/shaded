@@ -16,7 +16,12 @@ const base = bodyScript => {
 
 <body>
     <script>
-        ${bodyScript}
+      const title = document.querySelector("title")
+      title.textContent = "shaded: " + window.location.pathname;
+    </script>
+
+    <script>
+      ${bodyScript}
     </script>
 </body>
 </html>
@@ -24,15 +29,6 @@ const base = bodyScript => {
 };
 
 module.exports = {
-  listing: base(`const l = shaded.initListing({
-        path: window.location.pathname
-      });
-      document.body.appendChild(l.domElement);`),
-
-  shader: base(`const s = shaded.initShader({
-        path: window.location.pathname
-      });
-      document.body.appendChild(s.domElement);`),
-
-  custom: base
+  listing: base("document.body.appendChild(shaded.initListing().domElement);"),
+  shader: base("document.body.appendChild(shaded.initShader().domElement);")
 };

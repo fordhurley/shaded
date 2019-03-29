@@ -2,7 +2,9 @@ import { Controls } from "./controls";
 import { Shader } from "./shader";
 import { WebSocket } from "./websocket";
 
-export function init({ path }) {
+export function init() {
+  const path = window.location.pathname;
+
   const domElement = document.createElement("div");
 
   const shader = new Shader();
@@ -40,11 +42,6 @@ export function init({ path }) {
   shader.onResize(controls.setResolution.bind(controls));
   shader.onError(controls.addError.bind(controls));
   reload();
-
-  const title =
-    document.querySelector("title") || document.createElement("title");
-  title.textContent = `shaded: ${path}`;
-  document.head.appendChild(title);
 
   return { shader, controls, domElement };
 }

@@ -1,4 +1,6 @@
-export function init({ path }) {
+export function init() {
+  const path = window.location.pathname;
+
   const domElement = document.createElement("div");
 
   const loading = document.createElement("div");
@@ -24,11 +26,6 @@ export function init({ path }) {
     .finally(() => {
       domElement.removeChild(loading);
     });
-
-  const title =
-    document.querySelector("title") || document.createElement("title");
-  title.textContent = `shaded: ${path}`;
-  document.head.appendChild(title);
 
   return { domElement };
 }

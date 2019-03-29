@@ -125,26 +125,6 @@ module.exports = function() {
     res.send(template.shader);
   });
 
-  app.get(/^\/(.+\.js)/, (req, res) => {
-    fs.readFile(req.params[0], (error, data) => {
-      if (error) {
-        console.error("error reading js:", error);
-        if (error.code === "ENOENT") {
-          res.status(404);
-          res.json({ error: "not found" });
-          return;
-        }
-        res.status(500);
-        res.json({ error });
-        return;
-      }
-
-      const source = data.toString();
-      res.contentType("html");
-      res.send(template.custom(source));
-    })
-  });
-
   // Everything that starts and ends with / shows directory listings:
   app.get(/^\/(?:.+\/)*$/, (req, res) => {
     if (req.query.listing) {
