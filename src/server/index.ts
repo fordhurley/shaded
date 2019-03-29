@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-const http = require("http");
+import * as http from "http";
 
-const open = require("opn");
-const parseArgs = require("minimist");
+import open = require("open");
+import minimist = require("minimist");
 
-const app = require("./app");
-const wss = require("./wss");
+import { app } from "./app";
+import * as wss from "./wss";
 
-function serve(port, openBrowser) {
+function serve(port: number, openBrowser: boolean | string) {
   const server = http.createServer();
 
   server.on("request", app());
@@ -24,17 +24,16 @@ function serve(port, openBrowser) {
   // node's "events" package. Binding this *after* allows OUR "error" handler
   // to log and exit first, without the annoying stack trace. This is
   // particularly important for EADDRINUSE on start up.
-  wss(server);
+  wss.bindToServer(server);
 
   server.listen(port, () => {
     let uri = `http://localhost:${port}/`;
     console.log(`shaded listening at ${uri}`);
     if (openBrowser) {
       if (typeof openBrowser === "string") {
-        open(uri + openBrowser);
-      } else {
-        open(uri);
+        uri += openBrowser;
       }
+      open(uri);
     }
   });
 }
@@ -47,7 +46,7 @@ const usage = `Usage for shaded:
   -h, --help           show this help
 `;
 
-function main(opts) {
+function main(opts: minimist.ParsedArgs) {
   if (opts.help) {
     console.error(usage);
     return;
@@ -67,7 +66,7 @@ function main(opts) {
 }
 
 main(
-  parseArgs(process.argv.slice(2), {
+  minimist(process.argv.slice(2), {
     alias: {
       h: "help",
       p: "port",

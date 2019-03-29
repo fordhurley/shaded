@@ -1,4 +1,4 @@
-const base = bodyScript => {
+const base = (bodyScript: string) => {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +28,9 @@ const base = bodyScript => {
 `;
 };
 
-module.exports = {
-  listing: base("document.body.appendChild(shaded.initListing().domElement);"),
-  shader: base("document.body.appendChild(shaded.initShader().domElement);")
-};
+export const listing = base(
+  "document.body.appendChild(shaded.initListing().domElement);"
+);
+export const shader = base(
+  "document.body.appendChild(shaded.initShader().domElement);"
+);

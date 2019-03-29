@@ -1,11 +1,13 @@
-const chokidar = require("chokidar");
-const WebSocket = require("ws");
+import * as http from "http";
 
-module.exports = function(server) {
-  const wss = new WebSocket.Server({ server });
+import * as chokidar from "chokidar";
+import * as ws from "ws";
+
+export function bindToServer(server: http.Server) {
+  const wss = new ws.Server({ server });
 
   wss.on("connection", ws => {
-    const watcher = chokidar.watch();
+    const watcher = chokidar.watch([]);
 
     watcher.on("change", p => {
       ws.send(
@@ -17,7 +19,7 @@ module.exports = function(server) {
     });
 
     ws.on("message", data => {
-      const msg = JSON.parse(data);
+      const msg = JSON.parse(data.toString());
       switch (msg.command) {
         case "watch":
           msg.path = msg.path.slice(1);
@@ -34,4 +36,4 @@ module.exports = function(server) {
   });
 
   return wss;
-};
+}

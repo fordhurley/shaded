@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "outDir": "../../build/server",
+    "moduleResolution": "node",
+    "strict": true
+  }
+}
