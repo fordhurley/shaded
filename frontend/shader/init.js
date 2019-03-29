@@ -2,48 +2,48 @@ import { Controls } from "./controls";
 import { Shader } from "./shader";
 import { WebSocket } from "./websocket";
 
-export function init({ el, path, wsURL }) {
-  const containerEl = document.createElement("div");
-  el.appendChild(containerEl);
+export function init() {
+  const path = window.location.pathname;
 
-  const s = new Shader(containerEl);
+  const domElement = document.createElement("div");
 
-  const c = new Controls(el, path);
+  const shader = new Shader();
+  domElement.appendChild(shader.domElement);
+
+  const controls = new Controls(path);
+  domElement.appendChild(controls.domElement);
 
   const reload = () => {
     load(path)
       .then(data => {
         if (data.compiledSource) {
-          s.setShader(data.compiledSource);
+          shader.setShader(data.compiledSource);
         } else {
-          s.setShader(data.source);
+          shader.setShader(data.source);
         }
       })
       .catch(err => {
         console.error(err);
-        c.addError(err);
+        controls.addError(err);
       });
   };
 
-  const ws = new WebSocket(path, wsURL);
-  ws.onConnect(c.setConnected.bind(c));
-  ws.onDisconnect(c.setDisconnected.bind(c));
+  const ws = new WebSocket(path);
+  ws.onConnect(controls.setConnected.bind(controls));
+  ws.onDisconnect(controls.setDisconnected.bind(controls));
   ws.onChanged(p => {
-    c.clearErrors();
+    controls.clearErrors();
     reload();
   });
 
-  c.onReconnect(ws.reconnect.bind(ws));
+  controls.onReconnect(ws.reconnect.bind(ws));
 
-  s.onRender(c.reportFrame.bind(c));
-  s.onResize(c.setResolution.bind(c));
-  s.onError(c.addError.bind(c));
+  shader.onRender(controls.reportFrame.bind(controls));
+  shader.onResize(controls.setResolution.bind(controls));
+  shader.onError(controls.addError.bind(controls));
   reload();
 
-  const title =
-    document.querySelector("title") || document.createElement("title");
-  title.textContent = `shaded: ${path}`;
-  document.head.appendChild(title);
+  return { shader, controls, domElement };
 }
 
 function load(path) {

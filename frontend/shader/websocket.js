@@ -1,9 +1,14 @@
 import { Listener } from "../listener";
 
 export class WebSocket {
-  constructor(path, url) {
+  constructor(path) {
     this.path = path;
-    this.url = url;
+
+    this.url = "ws:";
+    if (window.location.protocol === "https:") {
+      this.url = "wss:";
+    }
+    this.url += "//" + window.location.host;
 
     this.listener = new Listener();
 

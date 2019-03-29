@@ -1,18 +1,19 @@
-export function init({ el, path }) {
-  const containerEl = document.createElement("div");
-  el.appendChild(containerEl);
+export function init() {
+  const path = window.location.pathname;
+
+  const domElement = document.createElement("div");
 
   const loading = document.createElement("div");
   loading.style.color = "dimgray";
   loading.textContent = "loading...";
-  containerEl.appendChild(loading);
+  domElement.appendChild(loading);
 
   load(path)
     .then(data => {
       data.entries.forEach(entry => {
         const entryEl = document.createElement("div");
         entryEl.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
-        containerEl.appendChild(entryEl);
+        domElement.appendChild(entryEl);
       });
     })
     .catch(error => {
@@ -20,16 +21,13 @@ export function init({ el, path }) {
       const errorEl = document.createElement("div");
       errorEl.textContent = error.toString();
       errorEl.style.color = "red";
-      containerEl.appendChild(errorEl);
+      domElement.appendChild(errorEl);
     })
     .finally(() => {
-      containerEl.removeChild(loading);
+      domElement.removeChild(loading);
     });
 
-  const title =
-    document.querySelector("title") || document.createElement("title");
-  title.textContent = `shaded: ${path}`;
-  document.head.appendChild(title);
+  return { domElement };
 }
 
 function load(path) {

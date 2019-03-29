@@ -2,11 +2,10 @@ import { breadcrumbs } from "../breadcrumbs";
 import { Listener } from "../listener";
 
 export class Controls {
-  constructor(containerEl, path) {
+  constructor(path) {
     this.listener = new Listener();
 
     this.domElement = document.createElement("div");
-    containerEl.appendChild(this.domElement);
 
     this.domElement.appendChild(breadcrumbs(path));
 

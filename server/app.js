@@ -4,6 +4,8 @@ const path = require("path");
 const express = require("express");
 const glslify = require("glslify");
 
+const template = require("./template");
+
 function serveShader(filePath, res) {
   fs.readFile(filePath, (error, data) => {
     if (error) {
@@ -107,18 +109,8 @@ function serveListing(reqPath, res) {
 module.exports = function() {
   const app = express();
 
-  const shaderJS = path.resolve(__dirname, "..", "build", "shader.js");
-  const shaderHTML = path.resolve(__dirname, "..", "html", "shader.html");
-
-  const listingJS = path.resolve(__dirname, "..", "build", "listing.js");
-  const listingHTML = path.resolve(__dirname, "..", "html", "listing.html");
-
-  app.get("/shader.js", (req, res) => {
-    res.sendFile(shaderJS);
-  });
-
-  app.get("/listing.js", (req, res) => {
-    res.sendFile(listingJS);
+  app.get("/shaded.js", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "..", "build", "shaded.js"));
   });
 
   app.get(/^\/(.+\.glsl)/, (req, res) => {
@@ -129,7 +121,8 @@ module.exports = function() {
     }
 
     // Otherwise, serve the shader page to the browser:
-    res.sendFile(shaderHTML);
+    res.contentType("html");
+    res.send(template.shader);
   });
 
   // Everything that starts and ends with / shows directory listings:
@@ -140,7 +133,8 @@ module.exports = function() {
     }
 
     // Otherwise, serve the listing page to the browser:
-    res.sendFile(listingHTML);
+    res.contentType("html");
+    res.send(template.listing);
   });
 
   // Catch all for everything else serves a file directly (e.g. a texture
