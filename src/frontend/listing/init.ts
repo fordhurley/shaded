@@ -1,3 +1,8 @@
+interface Entry {
+  url: string;
+  name: string;
+}
+
 export function init() {
   const path = window.location.pathname;
 
@@ -30,7 +35,7 @@ export function init() {
   return { domElement };
 }
 
-function load(path) {
+function load(path: string): Promise<{ entries: Entry[] }> {
   const req = new Request(path + "?listing=true");
   req.headers.set("accept", "application/json");
   return fetch(req).then(res => {

@@ -1,13 +1,16 @@
-export class Listener {
-  constructor() {
-    this.handlers = {};
-  }
+type Callback = (...args: any[]) => void;
+interface CallbackMap {
+  [key: string]: Callback[];
+}
 
-  addEventListener(name, callback) {
+export class Listener {
+  private handlers: CallbackMap = {};
+
+  addEventListener(name: string, callback: Callback) {
     this.getEventListeners(name).push(callback);
   }
 
-  getEventListeners(name) {
+  getEventListeners(name: string) {
     let handlers = this.handlers[name];
     if (!handlers) {
       handlers = [];
@@ -16,7 +19,7 @@ export class Listener {
     return handlers;
   }
 
-  forEachHandler(name, callback) {
+  forEachHandler(name: string, callback: Callback) {
     this.getEventListeners(name).forEach(callback);
   }
 }

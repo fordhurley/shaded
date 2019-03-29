@@ -1,7 +1,13 @@
 import { Listener } from "../listener";
 
-export class WebSocket {
-  constructor(path) {
+export class WebSocketWatcher {
+  private path: string;
+  private url: string;
+  private listener: Listener;
+  private reconnectTimeout?: number;
+  private ws!: WebSocket;
+
+  constructor(path: string) {
     this.path = path;
 
     this.url = "ws:";
@@ -23,7 +29,7 @@ export class WebSocket {
     this.reconnect();
   }
 
-  handleMessage(msg) {
+  handleMessage(msg: any) {
     switch (msg.command) {
       case "changed":
         if (msg.path !== this.path) {
@@ -39,7 +45,7 @@ export class WebSocket {
   }
 
   scheduleReconnect() {
-    if (this.reconnectTimeout) {
+    if (this.reconnectTimeout !== undefined) {
       window.clearTimeout(this.reconnectTimeout);
     }
     // TODO: back off
@@ -47,11 +53,11 @@ export class WebSocket {
   }
 
   reconnect() {
-    if (this.reconnectTimeout) {
+    if (this.reconnectTimeout !== undefined) {
       window.clearTimeout(this.reconnectTimeout);
     }
 
-    this.ws = new window.WebSocket(this.url);
+    this.ws = new WebSocket(this.url);
     this.ws.onopen = event => {
       this.listener.forEachHandler("connect", handler => {
         handler();
@@ -67,7 +73,7 @@ export class WebSocket {
     };
   }
 
-  sendWatch(path) {
+  sendWatch(path: string) {
     this.ws.send(
       JSON.stringify({
         command: "watch",
@@ -76,16 +82,15 @@ export class WebSocket {
     );
   }
 
-  // callback called with a string path arg.
-  onChanged(callback) {
+  onChanged(callback: (path: string) => void) {
     this.listener.addEventListener("changed", callback);
   }
 
-  onConnect(callback) {
+  onConnect(callback: () => void) {
     this.listener.addEventListener("connect", callback);
   }
 
-  onDisconnect(callback) {
+  onDisconnect(callback: () => void) {
     this.listener.addEventListener("disconnect", callback);
   }
 }

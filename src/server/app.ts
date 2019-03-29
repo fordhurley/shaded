@@ -110,9 +110,7 @@ export function app() {
   const app = express();
 
   app.get("/shaded.js", (req, res) => {
-    res.sendFile(
-      path.resolve(__dirname, "..", "frontend", "shaded.js")
-    );
+    res.sendFile(path.resolve(__dirname, "..", "frontend", "shaded.js"));
   });
 
   app.get(/^\/(.+\.glsl)/, (req, res) => {

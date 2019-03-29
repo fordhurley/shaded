@@ -2,7 +2,20 @@ import { breadcrumbs } from "../breadcrumbs";
 import { Listener } from "../listener";
 
 export class Controls {
-  constructor(path) {
+  public domElement: HTMLElement;
+
+  private listener: Listener;
+
+  private frames: number;
+  private lastTimestamp: number;
+
+  private resolution: HTMLElement;
+  private framerate: HTMLElement;
+  private connStatus: HTMLElement;
+  private reconnect: HTMLAnchorElement;
+  private errors: HTMLElement;
+
+  constructor(path: string) {
     this.listener = new Listener();
 
     this.domElement = document.createElement("div");
@@ -45,11 +58,11 @@ export class Controls {
     this.frames++;
   }
 
-  setResolution([width, height]) {
+  setResolution([width, height]: [number, number]) {
     this.resolution.textContent = `${width}×${height}`;
   }
 
-  animate(timestamp) {
+  animate(timestamp: number) {
     window.requestAnimationFrame(this.animate);
     if (timestamp - this.lastTimestamp < 500) {
       return;
@@ -60,7 +73,7 @@ export class Controls {
     this.lastTimestamp = timestamp;
   }
 
-  setFramerate(fps) {
+  setFramerate(fps: number) {
     this.framerate.textContent = `${fps.toFixed(2)} fps`;
   }
 
@@ -74,30 +87,30 @@ export class Controls {
     this.reconnect.style.display = "inline";
   }
 
-  handleReconnect(e) {
+  handleReconnect(e: MouseEvent) {
     e.preventDefault();
     this.listener.forEachHandler("reconnect", callback => {
       callback();
     });
   }
 
-  onReconnect(callback) {
+  onReconnect(callback: () => void) {
     this.listener.addEventListener("reconnect", callback);
   }
 
   clearErrors() {
     while (this.errors.hasChildNodes()) {
-      this.errors.removeChild(this.errors.lastChild);
+      this.errors.removeChild(this.errors.lastChild!);
     }
   }
 
-  addError(error) {
+  addError(error: string) {
     const errorEl = document.createElement("div");
     errorEl.textContent = error;
     this.errors.appendChild(errorEl);
   }
 }
 
-function dirname(path) {
+function dirname(path: string) {
   return path.match(/.*\//);
 }

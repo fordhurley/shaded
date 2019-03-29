@@ -14,13 +14,13 @@
   "version": "1.0.2",
   "bin": "./server/index.js",
   "scripts": {
-    "postinstall": "yarn run server-build && yarn run rollup-build",
+    "postinstall": "yarn run server-build && yarn run frontend-build",
     "server-build": "tsc --build src/server/tsconfig.json",
     "server-watch": "yarn run server-build --watch",
-    "rollup-build": "rollup -c src/frontend/rollup.config.js",
-    "rollup-watch": "rollup -c src/frontend/rollup.config.js --watch",
-    "prettier-check": "prettier ./src/server/*.ts ./src/frontend/*.js ./src/frontend/*/*.js --check",
-    "prettier-fix": "prettier ./src/server/*.ts  ./src/frontend/*.js ./src/frontend/*/*.js --write"
+    "frontend-build": "rollup -c src/frontend/rollup.config.js",
+    "frontend-watch": "yarn run frontend-build --watch",
+    "prettier-check": "prettier ./src/server/*.ts ./src/frontend/*.ts ./src/frontend/*/*.ts --check",
+    "prettier-fix": "prettier ./src/server/*.ts  ./src/frontend/*.ts ./src/frontend/*/*.ts --write"
   },
   "dependencies": {
     "chokidar": "^2.1.2",
@@ -30,7 +30,9 @@
     "open": "^6.0.0",
     "rollup": "^1.6.0",
     "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-typescript": "^1.0.1",
     "shader-canvas": "^0.8.1",
+    "tslib": "^1.9.3",
     "typescript": "^3.3.4000",
     "ws": "^6.2.0"
   },

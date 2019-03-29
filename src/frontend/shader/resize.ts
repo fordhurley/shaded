@@ -1,6 +1,9 @@
 // The callback will be called when the user resizes the element, with the
 // arguments width and height.
-export function bindResize(el, callback) {
+export function bindResize(
+  el: HTMLElement,
+  callback: (width: number, height: number) => void
+) {
   el.style.position = "relative";
 
   const handle = document.createElement("div");
@@ -15,7 +18,7 @@ export function bindResize(el, callback) {
 
   el.appendChild(handle);
 
-  const mousemove = e => {
+  const mousemove = (e: MouseEvent) => {
     e.preventDefault();
 
     const rect = el.getBoundingClientRect();
@@ -30,12 +33,12 @@ export function bindResize(el, callback) {
     callback(width, height);
   };
 
-  const mouseup = e => {
+  const mouseup = (e: MouseEvent) => {
     window.removeEventListener("mousemove", mousemove, false);
     window.removeEventListener("mouseup", mouseup, false);
   };
 
-  const mousedown = e => {
+  const mousedown = (e: MouseEvent) => {
     window.addEventListener("mousemove", mousemove, false);
     window.addEventListener("mouseup", mouseup, false);
   };
