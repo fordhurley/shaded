@@ -1,4 +1,4 @@
-## Unreleased
+## v1.0.3
 
 - Add an optional argument to `--open`, to go straight to a page in the browser.
   E.g. `shaded --open examples/glslify.glsl`.
