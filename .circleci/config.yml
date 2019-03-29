@@ -19,4 +19,5 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
 
       - run: yarn run prettier-check
-      - run: yarn run rollup-build
+      - run: yarn run server-build
+      - run: yarn run frontend-build
