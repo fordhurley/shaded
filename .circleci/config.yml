@@ -11,7 +11,9 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
 
-      - run: yarn install
+      # --ignore-scripts makes the postinstall script not run, which is good
+      # because we want to do that in a separate build step.
+      - run: yarn install --ignore-scripts
 
       - save_cache:
           paths:
