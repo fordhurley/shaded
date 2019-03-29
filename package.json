@@ -19,8 +19,8 @@
     "server-watch": "yarn run server-build --watch",
     "frontend-build": "rollup -c src/frontend/rollup.config.js",
     "frontend-watch": "yarn run frontend-build --watch",
-    "prettier-check": "prettier ./src/server/*.ts ./src/frontend/*.ts ./src/frontend/*/*.ts --check",
-    "prettier-fix": "prettier ./src/server/*.ts  ./src/frontend/*.ts ./src/frontend/*/*.ts --write"
+    "prettier-check": "prettier './src/**/*.ts' --check",
+    "prettier-fix": "prettier './src/**/*.ts' --write"
   },
   "dependencies": {
     "chokidar": "^2.1.2",
