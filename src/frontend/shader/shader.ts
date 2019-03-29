@@ -4,6 +4,16 @@ import { bindResize } from "./resize";
 import { Listener } from "../listener";
 
 export class Shader {
+  public domElement: HTMLElement;
+
+  private listener: Listener;
+  private canvas: ShaderCanvas;
+
+  private source: string;
+  private isAnimated: boolean = false;
+
+  private frameRequest?: number;
+
   constructor() {
     this.domElement = document.createElement("div");
     this.domElement.style.position = "relative";
@@ -25,23 +35,24 @@ export class Shader {
     this.animate = this.animate.bind(this);
     this.mousemove = this.mousemove.bind(this);
 
-    this.setShader(`
-            precision mediump float;
-            void main() {
-                gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
-            }
-        `);
+    this.source = `
+      precision mediump float;
+      void main() {
+        gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
+      }
+    `;
+    this.setShader(this.source);
   }
 
-  onError(callback) {
+  onError(callback: (error: string) => void) {
     this.listener.addEventListener("error", callback);
   }
 
-  onResize(callback) {
+  onResize(callback: (size: [number, number]) => void) {
     this.listener.addEventListener("resize", callback);
   }
 
-  onRender(callback) {
+  onRender(callback: () => void) {
     this.listener.addEventListener("render", callback);
   }
 
@@ -52,7 +63,7 @@ export class Shader {
     });
   }
 
-  setShader(source) {
+  setShader(source: string) {
     this.source = source;
     const errors = this.canvas.setShader(this.source);
     if (errors && errors.length > 0) {
@@ -73,7 +84,9 @@ export class Shader {
       this.canvas.domElement.addEventListener("mousemove", this.mousemove);
     }
 
-    cancelAnimationFrame(this.frameRequest);
+    if (this.frameRequest !== undefined) {
+      cancelAnimationFrame(this.frameRequest);
+    }
 
     const textureDirectives = parseTextureDirectives(this.source);
     Promise.all(
@@ -113,15 +126,15 @@ export class Shader {
     });
   }
 
-  animate(timestamp) {
+  animate(timestamp: number) {
     this.frameRequest = requestAnimationFrame(this.animate);
     this.canvas.setUniform("u_time", timestamp / 1000);
     this.render();
   }
 
-  mousemove(e) {
+  mousemove(e: MouseEvent) {
     const rect = this.canvas.domElement.getBoundingClientRect();
-    const mouse = [
+    const mouse: [number, number] = [
       (e.clientX - rect.left) * window.devicePixelRatio,
       this.canvas.domElement.height -
         (e.clientY - rect.top) * window.devicePixelRatio
@@ -134,7 +147,7 @@ export class Shader {
   }
 }
 
-function parseTextureDirectives(source) {
+function parseTextureDirectives(source: string) {
   // Looking for lines of the form:
   // uniform sampler2D foo; // ../textures/foo.png
   const re = /^\s*uniform\s+sampler2D\s+(\S+)\s*;\s*\/\/\s*(\S+)\s*$/gm;
@@ -149,7 +162,7 @@ function parseTextureDirectives(source) {
   return out;
 }
 
-function loadImage(src) {
+function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.src = src;

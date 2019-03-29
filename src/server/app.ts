@@ -1,12 +1,12 @@
-const fs = require("fs");
-const path = require("path");
+import * as fs from "fs";
+import * as path from "path";
 
-const express = require("express");
-const glslify = require("glslify");
+import * as express from "express";
+import * as glslify from "glslify";
 
-const template = require("./template");
+import * as template from "./template";
 
-function serveShader(filePath, res) {
+function serveShader(filePath: string, res: express.Response) {
   fs.readFile(filePath, (error, data) => {
     if (error) {
       console.error("error reading shader:", error);
@@ -26,7 +26,7 @@ function serveShader(filePath, res) {
     // resolve relative to the file, and absolute imports resolve
     // with the usual rules:
     const basedir = path.dirname(path.resolve(filePath));
-    let compiledSource;
+    let compiledSource: string;
     try {
       compiledSource = glslify.compile(source, { basedir });
     } catch (e) {
@@ -40,7 +40,7 @@ function serveShader(filePath, res) {
   });
 }
 
-function serveListing(reqPath, res) {
+function serveListing(reqPath: string, res: express.Response) {
   // Normalization and sanitation based on
   // https://github.com/expressjs/serve-index/blob/fcad6767/index.js#L116-L129
 
@@ -106,11 +106,11 @@ function serveListing(reqPath, res) {
   });
 }
 
-module.exports = function() {
+export function app() {
   const app = express();
 
   app.get("/shaded.js", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "..", "build", "shaded.js"));
+    res.sendFile(path.resolve(__dirname, "..", "frontend", "shaded.js"));
   });
 
   app.get(/^\/(.+\.glsl)/, (req, res) => {
@@ -142,4 +142,4 @@ module.exports = function() {
   app.use(express.static(path.resolve(".")));
 
   return app;
-};
+}

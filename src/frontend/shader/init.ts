@@ -1,6 +1,6 @@
 import { Controls } from "./controls";
 import { Shader } from "./shader";
-import { WebSocket } from "./websocket";
+import { WebSocketWatcher } from "./websocket";
 
 export function init() {
   const path = window.location.pathname;
@@ -28,15 +28,15 @@ export function init() {
       });
   };
 
-  const ws = new WebSocket(path);
-  ws.onConnect(controls.setConnected.bind(controls));
-  ws.onDisconnect(controls.setDisconnected.bind(controls));
-  ws.onChanged(p => {
+  const watcher = new WebSocketWatcher(path);
+  watcher.onConnect(controls.setConnected.bind(controls));
+  watcher.onDisconnect(controls.setDisconnected.bind(controls));
+  watcher.onChanged((p: string) => {
     controls.clearErrors();
     reload();
   });
 
-  controls.onReconnect(ws.reconnect.bind(ws));
+  controls.onReconnect(watcher.reconnect.bind(watcher));
 
   shader.onRender(controls.reportFrame.bind(controls));
   shader.onResize(controls.setResolution.bind(controls));
@@ -46,7 +46,9 @@ export function init() {
   return { shader, controls, domElement };
 }
 
-function load(path) {
+function load(
+  path: string
+): Promise<{ source: string; compiledSource?: string }> {
   const req = new Request(path + "?shader=true");
   req.headers.set("accept", "application/json");
   return fetch(req).then(res => {

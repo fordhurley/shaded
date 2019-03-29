@@ -1,4 +1,4 @@
-export function breadcrumbs(path) {
+export function breadcrumbs(path: string) {
   const el = document.createElement("div");
 
   const spacing = "0.5em";
