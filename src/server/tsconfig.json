@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "../../build/server",
+    "outDir": "../../dist/server",
     "moduleResolution": "node",
     "strict": true
   }

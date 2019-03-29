@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "../../build/frontend",
+    "outDir": "../../dist/frontend",
     "lib": ["dom"],
     "moduleResolution": "node",
     "strict": true
