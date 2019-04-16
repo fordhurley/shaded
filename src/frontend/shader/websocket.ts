@@ -29,7 +29,7 @@ export class WebSocketWatcher {
     this.reconnect();
   }
 
-  handleMessage(msg: any) {
+  private handleMessage(msg: any) {
     switch (msg.command) {
       case "changed":
         if (msg.path !== this.path) {
@@ -42,7 +42,7 @@ export class WebSocketWatcher {
     }
   }
 
-  scheduleReconnect() {
+  private scheduleReconnect() {
     if (this.reconnectTimeout !== undefined) {
       window.clearTimeout(this.reconnectTimeout);
     }
@@ -67,7 +67,7 @@ export class WebSocketWatcher {
     };
   }
 
-  sendWatch(path: string) {
+  private sendWatch(path: string) {
     this.ws.send(
       JSON.stringify({
         command: "watch",

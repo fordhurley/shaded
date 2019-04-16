@@ -62,7 +62,7 @@ export class Controls {
     this.resolution.textContent = `${width}×${height}`;
   }
 
-  animate(timestamp: number) {
+  private animate(timestamp: number) {
     window.requestAnimationFrame(this.animate);
     if (timestamp - this.lastTimestamp < 500) {
       return;
@@ -87,7 +87,7 @@ export class Controls {
     this.reconnect.style.display = "inline";
   }
 
-  handleReconnect(e: MouseEvent) {
+  private handleReconnect(e: MouseEvent) {
     e.preventDefault();
     this.listener.emit("reconnect");
   }
@@ -107,8 +107,4 @@ export class Controls {
     errorEl.textContent = error;
     this.errors.appendChild(errorEl);
   }
-}
-
-function dirname(path: string) {
-  return path.match(/.*\//);
 }

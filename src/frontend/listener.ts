@@ -10,7 +10,7 @@ export class Listener {
     this.getEventListeners(name).push(callback);
   }
 
-  getEventListeners(name: string) {
+  private getEventListeners(name: string) {
     let handlers = this.handlers[name];
     if (!handlers) {
       handlers = [];
