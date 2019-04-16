@@ -16,7 +16,6 @@ export class Shader {
 
   constructor() {
     this.domElement = document.createElement("div");
-    this.domElement.style.position = "relative";
     this.domElement.style.display = "inline-block";
 
     this.listener = new Listener();
