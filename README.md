@@ -109,7 +109,6 @@ open a page showing the shader in a WebGL canvas.
 - Show/copy original source and "compiled" (glslified) source.
 - Show line errors when viewing source.
 - Custom file extensions.
-- Open browser to a specific file/directory if named as an argument.
 - Browse "gallery" with previews.
 - Play/pause controls.
 - Export frames/video.
