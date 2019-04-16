@@ -56,6 +56,7 @@ As in recent versions of atom-glsl-preview, no `precision` specifiers or
 uniform declarations will be added to your shader automatically—what you code is
 what you get.
 
+
 #### Install
 
 [![npm](https://img.shields.io/npm/v/shaded.svg?color=%23FB3E44&style=flat-square)](https://www.npmjs.com/package/shaded)
@@ -86,6 +87,20 @@ open a page showing the shader in a WebGL canvas.
 - [`/examples`](examples/) in this repository
 - https://fordhurley.com/shaders
 - https://github.com/fordhurley/shaders
+
+
+#### Development
+
+- Start the build "watchers":
+
+       yarn run server-watch
+       yarn run frontend-watch
+
+- Start the server (needs to be manually restarted after a change):
+
+       node dist/server/index.js
+
+- Open a browser to the examples: http://localhost:3000/examples
 
 
 #### TODO
