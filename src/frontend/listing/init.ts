@@ -3,9 +3,7 @@ interface Entry {
   name: string;
 }
 
-export function init() {
-  const path = window.location.pathname;
-
+export function init(path: string) {
   const domElement = document.createElement("div");
 
   const loading = document.createElement("div");

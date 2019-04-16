@@ -2,9 +2,7 @@ import { Controls } from "./controls";
 import { Shader } from "./shader";
 import { WebSocketWatcher } from "./websocket";
 
-export function init() {
-  const path = window.location.pathname;
-
+export function init(path: string) {
   const domElement = document.createElement("div");
 
   const shader = new Shader();

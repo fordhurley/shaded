@@ -29,8 +29,8 @@ const base = (bodyScript: string) => {
 };
 
 export const listing = base(
-  "document.body.appendChild(shaded.initListing().domElement);"
+  "document.body.appendChild(shaded.initListing(window.location.pathname).domElement);"
 );
 export const shader = base(
-  "document.body.appendChild(shaded.initShader().domElement);"
+  "document.body.appendChild(shaded.initShader(window.location.pathname).domElement);"
 );
