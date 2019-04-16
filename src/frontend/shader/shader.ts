@@ -58,9 +58,7 @@ export class Shader {
 
   render() {
     this.canvas.render();
-    this.listener.forEachHandler("render", callback => {
-      callback();
-    });
+    this.listener.emit("render");
   }
 
   setShader(source: string) {
@@ -68,9 +66,7 @@ export class Shader {
     const errors = this.canvas.setShader(this.source);
     if (errors && errors.length > 0) {
       errors.forEach(error => {
-        this.listener.forEachHandler("error", callback => {
-          callback(error.text);
-        });
+        this.listener.emit("error", error.text);
       });
       return;
     }
@@ -98,9 +94,7 @@ export class Shader {
           .catch(reason => {
             console.error("texture error:", reason);
             const error = `error loading texture: ${filePath}`;
-            this.listener.forEachHandler("error", callback => {
-              callback(error);
-            });
+            this.listener.emit("error", error);
           });
       })
     )
@@ -121,9 +115,7 @@ export class Shader {
     if (this.canvas.testUniform("u_resolution")) {
       this.canvas.setUniform("u_resolution", resolution);
     }
-    this.listener.forEachHandler("resize", callback => {
-      callback(resolution);
-    });
+    this.listener.emit("resize", resolution);
   }
 
   animate(timestamp: number) {

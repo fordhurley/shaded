@@ -19,7 +19,9 @@ export class Listener {
     return handlers;
   }
 
-  forEachHandler(name: string, callback: Callback) {
-    this.getEventListeners(name).forEach(callback);
+  emit(name: string, ...args: any[]) {
+    this.getEventListeners(name).forEach(callback => {
+      callback(...args);
+    });
   }
 }

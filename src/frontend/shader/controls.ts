@@ -89,9 +89,7 @@ export class Controls {
 
   handleReconnect(e: MouseEvent) {
     e.preventDefault();
-    this.listener.forEachHandler("reconnect", callback => {
-      callback();
-    });
+    this.listener.emit("reconnect");
   }
 
   onReconnect(callback: () => void) {
