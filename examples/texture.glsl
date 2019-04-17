@@ -1,6 +1,7 @@
 precision mediump float;
 
 uniform vec2 u_resolution;
+uniform vec2 u_mouse;
 
 // The end-of-line comment on this uniform specifies how to load the image.
 // Valid forms:
@@ -33,7 +34,14 @@ void main() {
   // Tile:
   uv = fract(uv);
 
-  vec3 tex = texture2D(u_texture, uv).rgb;
+  vec3 color = texture2D(u_texture, uv).rgb;
 
-  gl_FragColor = vec4(tex, 1.0);
+  // https://en.wikipedia.org/wiki/Luma_(video)
+  float luma = dot(color, vec3(0.299, 0.587, 0.114));
+
+  // Interpolate between full color and grayscale based on mouse position:
+  float control = u_mouse.x / u_resolution.x; // 0 to 1
+  color = mix(color, vec3(luma), control);
+
+  gl_FragColor = vec4(color, 1.0);
 }
