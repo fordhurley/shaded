@@ -9,12 +9,7 @@ export class WebSocketWatcher {
 
   constructor(path: string) {
     this.path = path;
-
-    this.url = "ws:";
-    if (window.location.protocol === "https:") {
-      this.url = "wss:";
-    }
-    this.url += "//" + window.location.host;
+    this.url = websocketURL();
 
     this.listener = new Listener();
 
@@ -87,4 +82,13 @@ export class WebSocketWatcher {
   onDisconnect(callback: () => void) {
     this.listener.addEventListener("disconnect", callback);
   }
+}
+
+function websocketURL(): string {
+  let url = "ws:";
+  if (window.location.protocol === "https:") {
+    url = "wss:";
+  }
+  url += "//" + window.location.host;
+  return url;
 }
