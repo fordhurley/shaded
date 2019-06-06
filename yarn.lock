@@ -1771,9 +1771,9 @@ setprototypeof@1.1.0:
   integrity sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==
 
 shader-canvas@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/shader-canvas/-/shader-canvas-0.8.1.tgz#636a7571a30e03649222f7c2b0c38cb4e91201c3"
-  integrity sha512-B9QquXTgNduhEsbRVNvpTvCqm/3CMqc6iDBKmHRB+ZU6xXBz4sXOESVg7C9UZFdG6VfFD0P+C3ECzCpOqyxmVQ==
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/shader-canvas/-/shader-canvas-0.8.3.tgz#0c13fc7925ed05a9aeb4c1940e28e9898eed704b"
+  integrity sha512-56XDGBGzqmPY0am8WP5vi1P0ltSWq/NUvw5eoJyDIPlAK+zY2H6mxOCVXOvU+tum2ZpIQVLewEuq0E0WR7C/5g==
 
 shallow-copy@0.0.1:
   version "0.0.1"
