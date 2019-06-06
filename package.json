@@ -23,7 +23,7 @@
     "prettier-fix": "prettier './src/**/*.ts' --write"
   },
   "dependencies": {
-    "chokidar": "^2.1.2",
+    "chokidar": "^3.0.1",
     "express": "^4.16.4",
     "glslify": "^7.0.0",
     "minimist": "^1.2.0",
