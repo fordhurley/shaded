@@ -1,3 +1,7 @@
+## v1.0.4
+
+- Upgrade dependencies.
+
 ## v1.0.3
 
 - Add an optional argument to `--open`, to go straight to a page in the browser.
