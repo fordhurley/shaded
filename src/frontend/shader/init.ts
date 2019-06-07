@@ -19,6 +19,7 @@ export function init(path: string) {
         } else {
           shader.setShader(data.source);
         }
+        controls.setUpdated();
       })
       .catch(err => {
         console.error(err);

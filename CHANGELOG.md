@@ -1,3 +1,7 @@
+## UNRELEASED
+
+- Show when the shader was last updated.
+
 ## v1.0.4
 
 - Upgrade dependencies.
