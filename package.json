@@ -28,7 +28,7 @@
     "glslify": "^7.0.0",
     "minimist": "^1.2.0",
     "open": "^6.0.0",
-    "ws": "^6.2.0"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "@types/express": "^4.16.1",
