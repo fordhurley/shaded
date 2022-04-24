@@ -1,5 +1,7 @@
 ## UNRELEASED
 
+## v1.1.0
+
 - Update all dependencies, including minimum node version.
 
 ## v1.0.5
