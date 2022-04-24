@@ -102,6 +102,18 @@ open a page showing the shader in a WebGL canvas.
 
 - Open a browser to the examples: http://localhost:3000/examples
 
+#### Publishing
+
+`shaded` is automatically published to [npm](https://www.npmjs.com/package/shaded)
+by Github Actions when a new release is created in the Github repository.
+
+Before each release:
+
+1. Manually test all of the examples.
+2. Update [CHANGELOG.md](CHANGELOG.md).
+3. Bump the version number in package.json, following semver.
+
+Then, create a Release in the Github UI.
 
 #### TODO
 

@@ -1,5 +1,9 @@
 ## UNRELEASED
 
+- Update all dependencies, including minimum node version.
+
+## v1.0.5
+
 - Show when the shader was last updated.
 
 ## v1.0.4

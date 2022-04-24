@@ -1,0 +1,23 @@
+# This is based on the official guide:
+# https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
+
+name: Publish Package to npmjs
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '17.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: yarn
+      - run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
