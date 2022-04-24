@@ -30,9 +30,15 @@ function serveShader(filePath: string, res: express.Response) {
     try {
       compiledSource = glslify.compile(source, { basedir });
     } catch (e) {
-      console.error("glslify:", e.message);
+      let message;
+      if (e instanceof Error) {
+        message = e.message;
+      } else {
+        message = String(e);
+      }
+      console.error("glslify:", message);
       res.status(500);
-      res.json({ error: `glslify: ${e.message}` });
+      res.json({ error: `glslify: ${message}` });
       return;
     }
 
