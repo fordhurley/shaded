@@ -9,7 +9,7 @@
   "repository": "github:fordhurley/shaded",
   "license": "MIT",
   "engines": {
-    "node": ">=10.10.0"
+    "node": ">=17.8.0"
   },
   "version": "1.0.5",
   "bin": "./dist/server/index.js",
@@ -35,7 +35,7 @@
     "@types/minimist": "^1.2.0",
     "@types/open": "^6.0.0",
     "@types/ws": "^6.0.1",
-    "prettier": "^1.16.4",
+    "prettier": "^2.6.2",
     "rollup": "^1.6.0",
     "rollup-plugin-node-resolve": "^5.0.1",
     "rollup-plugin-typescript": "^1.0.1",

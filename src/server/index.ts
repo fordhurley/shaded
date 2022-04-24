@@ -13,7 +13,7 @@ function serve(port: number, openBrowser: boolean | string) {
 
   server.on("request", app());
 
-  server.on("error", err => {
+  server.on("error", (err) => {
     console.error("http:", err.message);
     process.exit(2);
   });
@@ -70,7 +70,7 @@ main(
     alias: {
       h: "help",
       p: "port",
-      o: "open"
-    }
+      o: "open",
+    },
   })
 );

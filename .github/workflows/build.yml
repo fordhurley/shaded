@@ -3,7 +3,7 @@ name: Build
 on: [push]
 
 env:
-  NODE_VERSION: '12.14'
+  NODE_VERSION: '17.8'
 
 jobs:
   prettier-check:

@@ -77,28 +77,28 @@ function serveListing(reqPath: string, res: express.Response) {
       return;
     }
 
-    const dirs = dirents.filter(dirent => dirent.isDirectory());
-    const files = dirents.filter(dirent => dirent.isFile());
+    const dirs = dirents.filter((dirent) => dirent.isDirectory());
+    const files = dirents.filter((dirent) => dirent.isFile());
 
     const entries = [];
     if (showUp) {
       entries.push({
         url: "..",
-        name: ".."
+        name: "..",
       });
     }
 
-    dirs.forEach(dir => {
+    dirs.forEach((dir) => {
       entries.push({
         url: path.join(".", dir.name) + path.sep,
-        name: dir.name + path.sep
+        name: dir.name + path.sep,
       });
     });
 
-    files.forEach(file => {
+    files.forEach((file) => {
       entries.push({
         url: path.join(".", file.name),
-        name: file.name
+        name: file.name,
       });
     });
 
