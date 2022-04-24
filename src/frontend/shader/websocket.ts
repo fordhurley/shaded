@@ -51,13 +51,13 @@ export class WebSocketWatcher {
     }
 
     this.ws = new WebSocket(this.url);
-    this.ws.onopen = event => {
+    this.ws.onopen = (event) => {
       this.listener.emit("connect");
     };
-    this.ws.onclose = event => {
+    this.ws.onclose = (event) => {
       this.listener.emit("disconnect");
     };
-    this.ws.onmessage = event => {
+    this.ws.onmessage = (event) => {
       this.handleMessage(JSON.parse(event.data));
     };
   }
@@ -66,7 +66,7 @@ export class WebSocketWatcher {
     this.ws.send(
       JSON.stringify({
         command: "watch",
-        path
+        path,
       })
     );
   }

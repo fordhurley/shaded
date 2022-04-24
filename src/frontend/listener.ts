@@ -20,7 +20,7 @@ export class Listener {
   }
 
   emit(name: string, ...args: any[]) {
-    this.getEventListeners(name).forEach(callback => {
+    this.getEventListeners(name).forEach((callback) => {
       callback(...args);
     });
   }

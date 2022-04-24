@@ -12,14 +12,14 @@ export function init(path: string) {
   domElement.appendChild(loading);
 
   load(path)
-    .then(data => {
-      data.entries.forEach(entry => {
+    .then((data) => {
+      data.entries.forEach((entry) => {
         const entryEl = document.createElement("div");
         entryEl.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
         domElement.appendChild(entryEl);
       });
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
       const errorEl = document.createElement("div");
       errorEl.textContent = error.toString();
@@ -36,9 +36,9 @@ export function init(path: string) {
 function load(path: string): Promise<{ entries: Entry[] }> {
   const req = new Request(path + "?listing=true");
   req.headers.set("accept", "application/json");
-  return fetch(req).then(res => {
+  return fetch(req).then((res) => {
     if (res.status !== 200) {
-      return res.json().then(json => {
+      return res.json().then((json) => {
         throw new Error(json.error);
       });
     }

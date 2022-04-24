@@ -6,19 +6,19 @@ import * as ws from "ws";
 export function bindToServer(server: http.Server) {
   const wss = new ws.Server({ server });
 
-  wss.on("connection", ws => {
+  wss.on("connection", (ws) => {
     const watcher = chokidar.watch([]);
 
-    watcher.on("change", p => {
+    watcher.on("change", (p) => {
       ws.send(
         JSON.stringify({
           command: "changed",
-          path: "/" + p
+          path: "/" + p,
         })
       );
     });
 
-    ws.on("message", data => {
+    ws.on("message", (data) => {
       const msg = JSON.parse(data.toString());
       switch (msg.command) {
         case "watch":

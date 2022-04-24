@@ -64,7 +64,7 @@ export class Shader {
     this.source = source;
     const errors = this.canvas.setShader(this.source);
     if (errors && errors.length > 0) {
-      errors.forEach(error => {
+      errors.forEach((error) => {
         this.listener.emit("error", error.text);
       });
       return;
@@ -87,10 +87,10 @@ export class Shader {
     Promise.all(
       textureDirectives.map(({ filePath, name }) => {
         return loadImage(filePath)
-          .then(img => {
+          .then((img) => {
             this.canvas.setTexture(name, img);
           })
-          .catch(reason => {
+          .catch((reason) => {
             console.error("texture error:", reason);
             const error = `error loading texture: ${filePath}`;
             this.listener.emit("error", error);
@@ -104,7 +104,7 @@ export class Shader {
           this.render();
         }
       })
-      .catch(reason => {
+      .catch((reason) => {
         console.error(reason);
       });
   }
@@ -128,7 +128,7 @@ export class Shader {
     const mouse: [number, number] = [
       (e.clientX - rect.left) * window.devicePixelRatio,
       this.canvas.domElement.height -
-        (e.clientY - rect.top) * window.devicePixelRatio
+        (e.clientY - rect.top) * window.devicePixelRatio,
     ];
 
     this.canvas.setUniform("u_mouse", mouse);

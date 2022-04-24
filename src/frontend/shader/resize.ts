@@ -13,7 +13,7 @@ export function bindResize(
     bottom: "-10px",
     width: "20px",
     height: "20px",
-    cursor: "se-resize"
+    cursor: "se-resize",
   });
 
   el.appendChild(handle);

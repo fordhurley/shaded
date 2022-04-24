@@ -13,7 +13,7 @@ export function init(path: string) {
 
   const reload = () => {
     load(path)
-      .then(data => {
+      .then((data) => {
         if (data.compiledSource) {
           shader.setShader(data.compiledSource);
         } else {
@@ -21,7 +21,7 @@ export function init(path: string) {
         }
         controls.setUpdated();
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         controls.addError(err);
       });
@@ -50,9 +50,9 @@ function load(
 ): Promise<{ source: string; compiledSource?: string }> {
   const req = new Request(path + "?shader=true");
   req.headers.set("accept", "application/json");
-  return fetch(req).then(res => {
+  return fetch(req).then((res) => {
     if (res.status !== 200) {
-      return res.json().then(json => {
+      return res.json().then((json) => {
         throw new Error(json.error);
       });
     }
