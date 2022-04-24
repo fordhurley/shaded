@@ -36,7 +36,7 @@
     "@types/open": "^6.0.0",
     "@types/ws": "^8.5.3",
     "prettier": "^2.6.2",
-    "rollup": "^1.6.0",
+    "rollup": "^2.70.2",
     "rollup-plugin-node-resolve": "^5.0.1",
     "rollup-plugin-typescript": "^1.0.1",
     "shader-canvas": "^0.8.1",
