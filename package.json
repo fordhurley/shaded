@@ -25,14 +25,14 @@
   "dependencies": {
     "chokidar": "^3.0.1",
     "express": "^4.17.3",
-    "glslify": "^7.0.0",
-    "minimist": "^1.2.0",
+    "glslify": "^7.1.1",
+    "minimist": "^1.2.6",
     "open": "^6.0.0",
     "ws": "^8.5.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
-    "@types/minimist": "^1.2.0",
+    "@types/minimist": "^1.2.2",
     "@types/open": "^6.0.0",
     "@types/ws": "^8.5.3",
     "prettier": "^2.6.2",
